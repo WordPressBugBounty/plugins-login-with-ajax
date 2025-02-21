@@ -63,10 +63,16 @@ jQuery(document).ready( function($) {
 
 	// Modal
 	$('.lwa-modal-trigger').each( function(i,e){
-		$(e).find('.lwa-modal-trigger-el, button, a').first().on('click', function(){
+		$(e).find('.lwa-modal-trigger-el, button, a').first().on('click', function( e ){
+			e.preventDefault();
 			var modal_id = $(this).closest('.lwa-modal-trigger').first().data('modal-id');
 			$('#'+modal_id+', #'+modal_id+' .lwa-modal-popup').addClass('active');
 		});
+	});
+	$('a.lwa-modal-trigger[data-modal-id], button.lwa-modal-trigger[data-modal-id]').on('click', function( e ){
+		e.preventDefault();
+		var modal_id = $(this).closest('.lwa-modal-trigger').first().data('modal-id');
+		$('#'+modal_id+', #'+modal_id+' .lwa-modal-popup').addClass('active');
 	});
 	$('.lwa-modal-overlay').each( function(i,e){
 		$('body').append(e);

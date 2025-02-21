@@ -22,7 +22,7 @@ class Admin {
 					<label><?php esc_html_e("Enable 2FA", 'login-with-ajax-pro'); ?></label>
 				</th>
 				<td>
-					<input type="checkbox" name="lwa_2FA[enabled]" id="lwa_2FA_enable" value='1' <?php echo ( !empty($TwoFA['enabled']) ) ? 'checked':''; ?> >
+					<input type="checkbox" name="lwa_2FA[enabled]" id="lwa_2FA_enable" value='1' <?php echo ( !empty($TwoFA['enabled']) ) ? 'checked':''; ?> data-confirm="<?php echo esc_attr( 'Disabling 2FA may disable other security features that rely on 2FA as a second layer of verification. Please revise your other security settings when disabling 2FA.', 'login-with-ajax' ); ?>">
 				</td>
 			</tr>
 			<tbody class="lwa-settings-2FA">
@@ -148,14 +148,13 @@ class Admin {
 						$('.lwa-settings-2FA-when-days').hide();
 					}
 				}).triggerHandler('change');
-				$('#lwa_2FA_enable').on('click', function( event ){
-					if( $(this).prop('checked') ){
+				$('#lwa_2FA_enable').on('click', function( event ) {
+					if ( event.currentTarget.checked ) {
 						$('tr.lwa-settings-2FA-thirdparty').show();
 						$('option.lwa-settings-2FA-thirdparty, input[type="checkbox"].lwa-settings-2FA-thirdparty').prop('disabled', false);
 						$('.lwa-settings-2FA').show();
-					}else{
-						let confirm_message = '<?php echo esc_js('Disabling 2FA may disable other security features that rely on 2FA as a second layer of verification. Please revise your other security settings when disabling 2FA.', 'login-with-ajax'); ?>';
-						if( confirm( confirm_message ) ) {
+					} else {
+						if ( !event.currentTarget.dataset.loaded || confirm(event.currentTarget.dataset.confirm) ) {
 							$('tr.lwa-settings-2FA-thirdparty').hide();
 							$('option.lwa-settings-2FA-thirdparty, input[type="checkbox"].lwa-settings-2FA-thirdparty').prop('disabled', true);
 							$('.lwa-settings-2FA').hide();
@@ -164,9 +163,10 @@ class Admin {
 							return false;
 						}
 					}
-				});
-				if( !$('#lwa_2FA_enable').prop('checked') ){
-					$('tr.lwa-settings-2FA-thirdparty').hide();
+					event.currentTarget.dataset.loaded = '1';
+				}).triggerHandler('click');
+				if( document.getElementById('lwa_2FA_enable').checked ){
+					document.querySelectorAll('tr.lwa-settings-2FA-thirdparty').forEach( el => el.classList.remove('hidden') );
 				}
 				document.querySelectorAll('.lwa-2FA-method').forEach( function( el ) {
 					el.addEventListener('change', function(){

@@ -78,6 +78,10 @@ class TwoFA {
 		do_action('lwa_2FA_loaded');
 	}
 	
+	public static function is_enabled() {
+		return !empty(LoginWithAjax::$data['2FA']['enabled']);
+	}
+	
 	public static function register_scripts_and_styles(){
 		//Enqueue scripts - Only one script enqueued here.... theme CSS takes priority, then default JS
 		$filename = defined('WP_DEBUG') && WP_DEBUG ? '2FA' : '2FA.min';

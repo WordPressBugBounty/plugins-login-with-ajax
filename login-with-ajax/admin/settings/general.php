@@ -38,7 +38,7 @@ $templates = \LoginWithAjax::get_templates_data();
 								<div class="lwa pixelbones">
 									<span class="lwa-status"></span>
 									<input type="text" placeholder="<?php esc_html_e( 'Sample input field','login-with-ajax' ) ?>" style="margin-bottom:10px; display:inline-block !important; width:auto !important;">
-									<button class="button-primary" onclick="return false;"><?php esc_attr_e('Preview Button','login-with-ajax'); ?></button>
+									<button type="button" class="button-primary" onclick="return false;"><?php esc_attr_e('Preview Button','login-with-ajax'); ?></button>
 									<a class="lwa-links-remember" href="#" title="<?php esc_attr_e('Sample link text','login-with-ajax') ?>" onclick="return false;"><?php esc_html_e('Sample link text','login-with-ajax') ?></a>
 								</div>
 							</div>

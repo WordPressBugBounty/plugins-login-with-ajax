@@ -24,7 +24,7 @@ $lwa['lwa_classes'] = empty($lwa['lwa_classes']) ? $lwa_classes : $lwa['lwa_clas
 <div class="lwa-wrapper lwa-modal-trigger <?php echo esc_attr(implode(' ', $lwa['wrapper_classes'])); ?>" data-modal-id="lwa-modal-<?php echo esc_attr($lwa['id']); ?>">
 	<div class="lwa lwa-modal lwa-<?php echo esc_attr($lwa['template-parent']); ?> <?php echo esc_attr(implode(' ', $lwa['wrapper_classes'])); ?>">
 		<?php if( empty($lwa['modal_button_html']) ) : ?>
-			<button class="lwa-modal-trigger-el"><?php esc_html_e('Log In', 'login-with-ajax'); ?></button>
+			<button type="button" class="lwa-modal-trigger-el"><?php esc_html_e('Log In', 'login-with-ajax'); ?></button>
 		<?php else : ?>
 			<?php echo $lwa['modal_button_html']; // this should have only come via PHP not shortcodes or widget ?>
 		<?php endif; ?>

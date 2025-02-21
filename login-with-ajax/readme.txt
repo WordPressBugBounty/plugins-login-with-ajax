@@ -3,8 +3,8 @@ Contributors: pxlite, msykes, netweblogic
 Tags: login, passkeys, registration, 2FA, security
 Text Domain: login-with-ajax
 Requires at least: 4.8
-Tested up to: 6.5
-Stable tag: 4.3
+Tested up to: 6.7.2
+Stable tag: 4.4
 Requires PHP: 5.2
 License: GPLv2 or later
 
@@ -20,6 +20,10 @@ Some of the features:
  * Login
  * Registration
  * Remember/Reset Password
+* PassKeys **(new in 4.4)**
+ * Next-Generation security, no passwords required!
+ * Users can log in without a username AND password.
+ * Biometric support (fingerprint, face ID, etc.)
 * 2FA - Two-Factor Authentication
  * TOTP - Time-based One-Time Password
   * Scan a QR code with popular authenticator apps like Google Authenticator, Authy, etc.
@@ -74,10 +78,6 @@ As of version 4.0, [we now offer a Pro add-on](https://loginwithajax.com/) which
     * SMS - Send a code to the user's phone
     * WhatsApp - Send a message, user clicks a button, done!
     * Telegram - Send a message, user clicks a button, done!
- * PassKeys
-   * Next-Generation security, no passwords required!
-   * Users can log in without a username AND password.
-   * Biometric support (fingerprint, face ID, etc.)
  * reCaptcha (v2, v2 Invisible and v3)
  * Login limiter
 * *3rd Party Page Builder Blocks/Widgets/Modules*
@@ -170,6 +170,18 @@ Check out our [troubleshooting](https://docs.loginwithajax.com/troubleshooting/)
 We recommend first visiting our [documentation site](https://docs.loginwithajax.com) which includes a troubleshooting section. IF you have a question or comment, we're available both on our [community forums](https://wordpress.org/support/plugin/login-with-ajax/) which we monitor regularly, as well as our [Pro support](https://loginwithajax.com/gopro/) for dedicated one-to-one support.
 
 == Changelog ==
+= 4.4 =
+* Integrated passkeys into Login With AJAX.
+* Fixed JS errors in 2FA admin.
+* Added `2FA::is_enabled()` function.
+* Fixed dismiss admin notice JS errors.
+* Fixed review and promo popup modals to avoid complaints.
+* Updated readme WordPress version.
+* Fixed trigger buttons intercepting submit trigger when pressing enter/return on forms due to lack of `type="button"` prop.
+* Fixed modal backwards compatibility issues.
+* Fixed instance ID errors when regenerating AJAX forms due to re-randomization each load.
+* Fixed fatal JS error when resetting password on LWA forms if ajaxify feature is enabled.
+
 = 4.3 =
 * fixed incorrect use of path_join() preventing loading templates from the wp-content/plugin-templates/login-with-ajax folder
 * added/fixed modal_button_html overwriting modal button output (only via PHP)

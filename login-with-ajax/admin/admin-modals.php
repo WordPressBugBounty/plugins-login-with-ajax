@@ -10,7 +10,7 @@ class Admin_Modals {
 		add_filter('admin_enqueue_scripts', array( static::class, 'admin_enqueue_scripts' ), 100);
 		add_filter('wp_ajax_lwa-admin-popup-modal', array( static::class, 'ajax' ));
 		add_filter('lwa_admin_notice_review-nudge_message', array( static::class, 'review_notice' ));
-		if( time() < 1713096000 ) {
+		if( time() < 1813096000 ) {
 			add_filter( 'lwa_admin_notice_promo-popup_message', array( static::class, 'promo_notice' ) );
 		}
 		add_filter( 'lwa_admin_notice_expired-reminder_message', array( static::class, 'expired_reminder_notice' ) );
@@ -28,30 +28,13 @@ class Admin_Modals {
 			$show_network_admin = is_network_admin() && !empty($_REQUEST['page']) && preg_match('/^login\-with\-ajax/', $_REQUEST['page']);
 			// show review nudge
 			if( !empty($data['admin-modals']['review-nudge']) && $data['admin-modals']['review-nudge'] < time() ) {
-				if(true ) {
-					// check it hasn't been shown more than 1 times, if so revert it to a regular admin notice
-					if( empty($data['admin-modals']['review-nudge-count']) ){
-						$data['admin-modals']['review-nudge-count'] = 0;
-					}
-					if( $data['admin-modals']['review-nudge-count'] < 1 ) {
-						// enqueue script and load popup action
-						if ( ! wp_script_is( 'login-with-ajax-admin' ) ) {
-							\LoginWithAjax::enqueue_scripts_and_styles( true );
-							Admin::enqueue_scripts_and_styles( true );
-						}
-						add_filter( 'admin_footer', array( static::class, 'review_popup' ) );
-						$data['admin-modals']['review-nudge-count']++;
-						update_site_option('lwa_admin_notices', $data);
-					}else{
-						// move it into a regular admin notice and stop displaying
-						unset($data['admin-modals']['review-nudge-count']);
-						unset($data['admin-modals']['review-nudge']);
-						update_site_option('lwa_admin_notices', $data);
-						// notify user of new update
-						$Admin_Notice = new Admin_Notice(array( 'name' => 'review-nudge', 'who' => 'admin', 'where' => 'all' ));
-						Admin_Notices::add($Admin_Notice, is_multisite());
-					}
-				}
+				// move it into a regular admin notice and stop displaying
+				unset($data['admin-modals']['review-nudge-count']);
+				unset($data['admin-modals']['review-nudge']);
+				update_site_option('lwa_admin_notices', $data);
+				// notify user of new update
+				$Admin_Notice = new Admin_Notice(array( 'name' => 'review-nudge', 'who' => 'admin', 'where' => 'all' ));
+				Admin_Notices::add($Admin_Notice, is_multisite());
 			}
 			// promo
 			// check if pro license is active
@@ -61,29 +44,13 @@ class Admin_Modals {
 				$pro_license_active = !(empty($key['until']) || $key['until'] < strtotime('+10 months'));
 			}
 			if( time() < 1713096000 && !empty($data['admin-modals']['promo-popup']) /*&& !$pro_license_active*/) {
-				if( $data['admin-modals']['promo-popup'] == 1 || ($data['admin-modals']['promo-popup'] == 2 ) ) {
-					// enqueue script and load popup action
-					if( empty($data['admin-modals']['promo-popup-count']) ){
-						$data['admin-modals']['promo-popup-count'] = 0;
-					}
-					if( $data['admin-modals']['promo-popup-count'] <= 1 ) {
-						if ( ! wp_script_is( 'login-with-ajax-admin' ) ) {
-							\LoginWithAjax::enqueue_scripts_and_styles( true );
-							Admin::enqueue_scripts_and_styles( true );
-						}
-						add_filter('admin_footer', array( static::class, 'promo_popup' ));
-						$data['admin-modals']['promo-popup-count']++;
-						update_site_option('lwa_admin_notices', $data);
-					}else{
-						// move it into a regular admin notice and stop displaying
-						unset($data['admin-modals']['promo-popup-count']);
-						unset($data['admin-modals']['promo-popup']);
-						update_site_option('lwa_admin_notices', $data);
-						// notify user of new update
-						$Admin_Notice = new Admin_Notice(array( 'name' => 'promo-popup', 'who' => 'admin', 'where' => 'all' ));
-						Admin_Notices::add($Admin_Notice, is_multisite());
-					}
-				}
+				// move it into a regular admin notice and stop displaying
+				unset($data['admin-modals']['promo-popup-count']);
+				unset($data['admin-modals']['promo-popup']);
+				update_site_option('lwa_admin_notices', $data);
+				// notify user of new update
+				$Admin_Notice = new Admin_Notice(array( 'name' => 'promo-popup', 'who' => 'admin', 'where' => 'all' ));
+				Admin_Notices::add($Admin_Notice, is_multisite());
 			}
 		}
 		
@@ -123,42 +90,6 @@ class Admin_Modals {
 		}
 	}
 	
-	public static function review_popup(){
-		// check admin data and see if show data is still enabled
-		?>
-		<div class="lwa-modal-overlay lwa-admin-modal" id="lwa-review-nudge" data-nonce="<?php echo wp_create_nonce('lwa-review-nudge'); ?>">
-			<div class="lwa-modal-popup lwa-wrapper lwa-bones">
-				<div class="lwa pixelbones">
-					<header>
-						<div class="lwa-modal-title"><?php esc_html_e('Enjoying Login With AJAX? Help Us Improve!', 'login-with-ajax'); ?></div>
-					</header>
-					<div class="lwa-modal-content has-image">
-						<div>
-							<p><?php esc_html_e('Pardon the interruption... we hope you\'re enjoying Login With AJAX, and if so, we\'d really appreciate a positive review on the wordpress.org repository!', 'login-with-ajax'); ?></p>
-							<p><?php esc_html_e('Login With AJAX has been maintained, developed and supported for free since it was released in 2008, positive reviews are one way that help us keep going.', 'login-with-ajax'); ?></p>
-							<p><?php esc_html_e('If you could spare a few minutes, we would appreciate it if you could please leave us a review.', 'login-with-ajax'); ?></p>
-						</div>
-						<div class="image">
-							<img src="<?php echo LOGIN_WITH_AJAX_URL . '/assets/images/star-halo.svg'; ?>" style="width:75%; opacity:0.7;">
-							<img src="<?php echo LOGIN_WITH_AJAX_URL . '/assets/images/icon.svg'; ?>">
-						</div>
-					</div><!-- content -->
-					<footer class="lwa-submit-section input">
-						<div>
-							<a href="https://wordpress.org/support/plugin/login-with-ajax/reviews/?filter=5#new-topic-0" class="button button-primary input" target="_blank" style="margin:10px auto; --accent-color:#429543; --accent-color-hover:#429543;">
-								Leave a Review
-								<img src="<?php echo LOGIN_WITH_AJAX_URL . '/assets/images/five-stars.svg'; ?>" style="max-height:10px; width:50px; margin-left:5px;">
-							</a>
-							<button class="button button-secondary dismiss-modal"><?php esc_html_e('Dismiss Message', 'login-with-ajax'); ?></button>
-						</div>
-					</footer>
-				</div>
-			</div><!-- modal -->
-		</div>
-		<?php
-		static::output_js();
-	}
-	
 	public static function review_notice(){
 		ob_start();
 		?>
@@ -177,54 +108,11 @@ class Admin_Modals {
 					Leave a Review
 					<img src="<?php echo LOGIN_WITH_AJAX_URL . '/assets/images/five-stars.svg'; ?>" style="max-height:10px; width:50px; margin-left:5px;">
 				</a>
-				<a href="<?php echo esc_url( admin_url('admin-ajax.php?action=lwa_dismiss_admin_notice&notice=review-nudge&redirect=1&nonce='.wp_create_nonce('lwa_dismiss_admin_noticereview-nudge') ) ); ?>" class="button button-secondary" style="margin:10px 0;"><?php esc_html_e('Dismiss', 'login-with-ajax'); ?></a>
+				<a href="<?php echo esc_url( admin_url('admin-ajax.php?action=lwa_dismiss_admin_notice&notice=review-nudge&redirect=1&nonce='.wp_create_nonce('lwa_dismiss_admin_noticereview-nudge'. get_current_user_id()) ) ); ?>" class="button button-secondary dismiss-notice" style="margin:10px 0;"><?php esc_html_e('Dismiss', 'login-with-ajax'); ?></a>
 			</div>
 		</div><!-- content -->
 		<?php
 		return ob_get_clean();
-	}
-	
-	public static function promo_popup(){
-		// check admin data and see if show data is still enabled
-		?>
-		<div class="lwa-modal-overlay lwa-admin-modal" id="lwa-promo-popup" data-nonce="<?php echo wp_create_nonce('lwa-promo-popup'); ?>">
-			<div class="lwa-modal-popup lwa-wrapper lwa-bones">
-				<div class="lwa pixelbones">
-					<div class="lwa pixelbones">
-						<header>
-							<a class="lwa-close-modal dismiss-modal" href="#"></a><!-- close modal -->
-							<h4 class="lwa-modal-title">Login With AJAX Pro - Limited Time 50% Off!</h4>
-						</header>
-						<div class="lwa-modal-content has-image" style="--font-size:16px;">
-							<div>
-								<p>Pardon the interruption.... we'd like to make sure you're aware of our limited time deal. Purchase a license, renew or upgrade and get up to 50% off!</p>
-								<p>We have just released Pro 2.0 which adds some amazing new features:</p>
-								<ul>
-									<li>PassKeys - Passwordless and Secure On-Click Logins</li>
-									<li>SMS 2FA</li>
-									<li>WhatsApp One-Click 2FA</li>
-									<li>Telegram One-Click 2FA</li>
-								</ul>
-								<p>We hope you're enjoying the plugin and if you're at all considering going Pro, you still have time to make the best of this limited opportunity!</p>
-							</div>
-							<div class="image">
-								<img src="<?php echo LOGIN_WITH_AJAX_URL . '/assets/images/icon.svg'; ?>">
-								<a href="https://loginwithajax.com/gopro/?utm_source=login-with-ajax&utm_medium=plugin-popup&utm_campaign=plugins" class="button button-primary input" target="_blank" style="margin:10px auto; --accent-color:#429543; --accent-color-hover:#429543;">Go Pro!</a>
-							</div>
-						</div><!-- content -->
-						<footer class="lwa-submit-section input">
-							<div>
-							</div>
-							<div>
-								<button class="button button-secondary dismiss-modal">Dismiss Notice</button>
-							</div>
-						</footer>
-					</div><!-- modal -->
-				</div>
-			</div>
-		</div>
-		<?php
-		static::output_js();
 	}
 	
 	public static function promo_notice(){
@@ -240,7 +128,7 @@ class Admin_Modals {
 				<p>LWA 2.0 introduces some amazing new login and security features such as  Passkeys (one-click logins) and additional 2FA methods including SMS, WhatsApp and Telegram.</p>
 				<p>We hope you're enjoying the plugin and if you're at all considering going Pro, you still have time to make the best of this limited opportunity!</p>
 				<a href="https://loginwithajax.com/gopro/?utm_source=login-with-ajax&utm_medium=plugin-notice&utm_campaign=plugins" class="button button-primary" target="_blank" style="margin:10px auto; --accent-color:#429543; --accent-color-hover:#429543;">Go Pro!</a>
-				<a href="<?php echo esc_url( admin_url('admin-ajax.php?action=lwa_dismiss_admin_notice&notice=promo-popup&redirect=1&nonce='.wp_create_nonce('lwa_dismiss_admin_noticepromo-popup') ) ); ?>" class="button button-secondary" style="margin:10px 0;"><?php esc_html_e('Dismiss', 'login-with-ajax'); ?></a>
+				<a href="<?php echo esc_url( admin_url('admin-ajax.php?action=lwa_dismiss_admin_notice&notice=promo-popup&redirect=1&nonce='.wp_create_nonce('lwa_dismiss_admin_noticepromo-popup'. get_current_user_id()) ) ); ?>" class="button button-secondary dismiss-notice" style="margin:10px 0;"><?php esc_html_e('Dismiss', 'login-with-ajax'); ?></a>
 			</div>
 		</div><!-- content -->
 		<?php

@@ -224,6 +224,10 @@ class Admin_Notices {
 								console.log( 'Could not dismiss admin notice, error is %o', error );
 							});
 							return false;
+						} else if ( e.target.matches('.dismiss-notice') ) {
+							e.preventDefault();
+							notice.querySelectorAll('button.notice-dismiss').forEach( el => el.click() );
+							return false;
 						}
 					});
 				});

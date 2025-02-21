@@ -134,7 +134,7 @@ class Method_Code extends Method_Transport {
 			</p>
 			<?php endif; ?>
 			<p>
-				<button class="lwa-2FA-resend u-full-width">
+				<button type="button" class="lwa-2FA-resend u-full-width">
 					<?php esc_html_e('Resend Code', 'login-with-ajax-pro'); ?> <span class="lwa-2FA-resend-timer" data-countdown="<?php echo esc_attr(static::$authentication_resend); ?>"></span>
 				</button>
 			</p>

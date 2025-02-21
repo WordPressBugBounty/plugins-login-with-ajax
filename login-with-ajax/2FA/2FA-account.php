@@ -56,7 +56,7 @@ class Account {
 	public static function show_profile_fields_title ( $user ) {
 		ob_start();
 		?>
-		<h4><?php _e('Two Factor Authentication (2FA)','login-with-ajax'); ?></h4>
+		<h3><?php _e('Two Factor Authentication (2FA)','login-with-ajax'); ?></h3>
 		<p><?php esc_html_e('2FA provides an extra layer of security in case your username and password is compromised, preventing any attacker from logging into your account without further authentication. We recommend enabling at least one 2FA method to secure your account.', 'login-with-ajax'); ?></p>
 		<?php
 		echo apply_filters('lwa_2FA_account_show_profile_fields_title', ob_get_clean(), $user);

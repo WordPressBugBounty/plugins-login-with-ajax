@@ -66,14 +66,16 @@ var LWA_Ajaxify = {
 		});
 		jQuery(document).on('lwa_register lwa_remember', function(e, response, form, statusElement){
 			let selector = LWA_Ajaxify.is_ajaxifiable( form );
-			let ajaxify = LWA_Ajaxify.ajaxifiables[selector]; // we assume in this case it comes up positive since it's a matched selector already
-			if( ['register','remember'].includes( ajaxify.type ) ) {
-				if( response.result ){
-					form.hide();
-					form.find('input').val('');
-				}
-				if( ajaxify && typeof ajaxify[e.type] == 'function' ) {
-					ajaxify[e.type]( form );
+			if ( selector ) {
+				let ajaxify = LWA_Ajaxify.ajaxifiables[selector]; // we assume in this case it comes up positive since it's a matched selector already
+				if (['register', 'remember'].includes(ajaxify.type)) {
+					if (response.result) {
+						form.hide();
+						form.find('input').val('');
+					}
+					if (ajaxify && typeof ajaxify[e.type] == 'function') {
+						ajaxify[e.type](form);
+					}
 				}
 			}
 		});

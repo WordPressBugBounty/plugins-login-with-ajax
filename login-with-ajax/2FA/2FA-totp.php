@@ -159,7 +159,7 @@ class TOTP extends Method {
 					<input data-name="secret" type="hidden" value="<?php echo $secret; ?>" class="setup-verify-field">
 					<input data-name="code"   type="text"   placeholder="<?php esc_attr_e('Enter Code', 'login-with-ajax'); ?>" class="2FA-totp-verify-code setup-verify-field" aria-label="<?php esc_attr_e('Enter Code', 'login-with-ajax'); ?>"">
 					<input data-name="log"    type="hidden" value="<?php echo esc_attr($user->user_login); ?>" class="setup-verify-field">
-					<button class="setup-verify-button setup-verify-button-totp" data-txt="<?php esc_attr_e('Verifying ...', 'login-with-ajax'); ?>"><?php esc_html_e('Verify Code', 'login-with-ajax'); ?></button>
+					<button type="button" class="setup-verify-button setup-verify-button-totp" data-txt="<?php esc_attr_e('Verifying ...', 'login-with-ajax'); ?>"><?php esc_html_e('Verify Code', 'login-with-ajax'); ?></button>
 				</div>
 				<mark class="error"></mark>
 				<?php if( $current_secret ) echo static::get_setup_status_reset_button(); ?>

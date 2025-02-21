@@ -169,7 +169,7 @@ class Backup extends Method {
 			<div class="setup-verify-form backup-codes-generate">
 				<input data-name="nonce"  type="hidden" value="<?php echo wp_create_nonce('2FA-setup-verify-' . static::$method . '-' . $user->ID); ?>" class="setup-verify-field">
 				<input data-name="log"    type="hidden" value="<?php echo esc_attr($user->user_login); ?>" class="setup-verify-field">
-				<button class="setup-verify-button setup-backup-codes-generate" data-txt="<?php esc_attr_e('Generating Codes...', 'login-with-ajax'); ?>"><?php esc_html_e('Generate Backup Codes', 'login-with-ajax'); ?></button>
+				<button type="button" class="setup-verify-button setup-backup-codes-generate" data-txt="<?php esc_attr_e('Generating Codes...', 'login-with-ajax'); ?>"><?php esc_html_e('Generate Backup Codes', 'login-with-ajax'); ?></button>
 				<?php echo static::get_setup_status_reset_button(); ?>
 			</div>
 			<mark class="error"></mark>
