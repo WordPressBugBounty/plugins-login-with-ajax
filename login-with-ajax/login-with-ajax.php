@@ -4,7 +4,7 @@ Plugin Name: Login With Ajax
 Plugin URI: https://loginwithajax.com
 Description: Ajax driven login widget. Customisable from within your template folder, and advanced settings from the admin area.
 Author: Pixelite
-Version: 4.4
+Version: 4.5
 Author URI: https://pixelite.com/?utm_source=login-with-ajax&utm_medium=plugin-header&utm_campaign=plugins
 Tags: Login, Ajax, Redirect, BuddyPress, MU, MultiSite, security, sidebar, admin, widget
 Text Domain: login-with-ajax
@@ -24,7 +24,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-define('LOGIN_WITH_AJAX_VERSION', '4.4');
+define('LOGIN_WITH_AJAX_VERSION', '4.5');
 define('LOGIN_WITH_AJAX_PATH', dirname(__FILE__));
 define('LOGIN_WITH_AJAX_URL', trailingslashit(plugin_dir_url(__FILE__)));
 class LoginWithAjax {
@@ -97,15 +97,9 @@ class LoginWithAjax {
 		include_once('blocks/login/login-block.php');
 		include_once('ajaxify/loader.php');
 		include_once('transports/transports.php');
+		include( 'passkeys/loader.php' );
 		include_once('2FA/2FA.php');
-		add_action('lwa_loaded', function() {
-			// added here to prevent conflicts with older Pro versions
-			// note that any update a month onwards will remove this assuming users have updated Pro or have commented out the line indicated in our release post
-			if ( !function_exists( 'lwa_passkeys_2FA_load' ) ) {
-				include( 'passkeys/loader.php' );
-			}
-		}, 101);
-		
+
 		// add authentication filter for other LWA features/add-ons to hook into instead of directly to WP
 		add_filter('authenticate', '\LoginWithAjax::authenticate', 9999, 1);
 		

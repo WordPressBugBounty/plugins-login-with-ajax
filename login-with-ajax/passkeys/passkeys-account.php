@@ -2,6 +2,7 @@
 namespace Login_With_AJAX\Passkeys;
 
 use Login_With_AJAX\TwoFA;
+use LoginWithAjax;
 
 /**
  * Handles output of setup forms for users, such as on profile page, and also the UI-side of Passkey registration (Server object handles the AJAX side of things).
@@ -10,7 +11,7 @@ class Account {
 	
 	public static function init() {
 		// hook into profile page
-		if( TwoFA::is_enabled() && !empty(\LoginWithAjax::$data['passkeys']['2FA']) ) {
+		if( !empty( LoginWithAjax::$data['2FA']['enabled'] ) && !empty( LoginWithAjax::$data['passkeys']['2FA'] ) ) {
 			// add it above the TwoFA content, therefore disable the title of TwoFA so PK title takes over
 			add_filter('lwa_2FA_account_show_profile_fields_title', '__return_empty_string');
 		} else {

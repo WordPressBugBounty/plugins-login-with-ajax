@@ -3,8 +3,8 @@ Contributors: pxlite, msykes, netweblogic
 Tags: login, passkeys, registration, 2FA, security
 Text Domain: login-with-ajax
 Requires at least: 4.8
-Tested up to: 6.7.2
-Stable tag: 4.4
+Tested up to: 6.8
+Stable tag: 4.5
 Requires PHP: 5.2
 License: GPLv2 or later
 
@@ -170,6 +170,10 @@ Check out our [troubleshooting](https://docs.loginwithajax.com/troubleshooting/)
 We recommend first visiting our [documentation site](https://docs.loginwithajax.com) which includes a troubleshooting section. IF you have a question or comment, we're available both on our [community forums](https://wordpress.org/support/plugin/login-with-ajax/) which we monitor regularly, as well as our [Pro support](https://loginwithajax.com/gopro/) for dedicated one-to-one support.
 
 == Changelog ==
+= 4.5 =
+* fixed compatibility issues with passkeys in LWA and LWA Pro due to making passkeys free in LWA 4.4,
+* LWA Pro users need to upgrade to 2.1 for compatibility with passkeys
+
 = 4.4 =
 * Integrated passkeys into Login With AJAX.
 * Fixed JS errors in 2FA admin.
