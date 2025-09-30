@@ -21,7 +21,7 @@ class Passkeys {
 	}
 	
 	public static function enqueue_scripts_and_styles() {
-		$version = LWA_PRO_VERSION;
+		$version = LOGIN_WITH_AJAX_VERSION;
 		TwoFA::register_scripts_and_styles();
 		$footer = did_action('admin_enequeue_scripts') || did_action('lwa_enqueue') ? array() : array('in_footer' => true);
 		if ( ( defined('WP_DEBUG') && WP_DEBUG ) || ( defined('LWA_DEBUG') && constant('LWA_DEBUG') ) ) {

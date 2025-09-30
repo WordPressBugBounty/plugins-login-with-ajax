@@ -4,7 +4,7 @@ Plugin Name: Login With Ajax
 Plugin URI: https://loginwithajax.com
 Description: Ajax driven login widget. Customisable from within your template folder, and advanced settings from the admin area.
 Author: Pixelite
-Version: 4.5
+Version: 4.5.1
 Author URI: https://pixelite.com/?utm_source=login-with-ajax&utm_medium=plugin-header&utm_campaign=plugins
 Tags: Login, Ajax, Redirect, BuddyPress, MU, MultiSite, security, sidebar, admin, widget
 Text Domain: login-with-ajax
@@ -24,9 +24,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-define('LOGIN_WITH_AJAX_VERSION', '4.5');
+define('LOGIN_WITH_AJAX_VERSION', '4.5.1');
 define('LOGIN_WITH_AJAX_PATH', dirname(__FILE__));
 define('LOGIN_WITH_AJAX_URL', trailingslashit(plugin_dir_url(__FILE__)));
+
 class LoginWithAjax {
 
 	/**
