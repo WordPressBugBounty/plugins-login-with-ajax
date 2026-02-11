@@ -3,7 +3,7 @@ Contributors: pxlite, msykes, netweblogic
 Tags: login, passkeys, registration, 2FA, security
 Text Domain: login-with-ajax
 Requires at least: 4.8
-Tested up to: 6.8
+Tested up to: 6.9
 Stable tag: 4.5.1
 Requires PHP: 5.2
 License: GPLv2 or later
