@@ -3,7 +3,7 @@
  * 2FA Setup Intro, user first sees this if they log in and need to (or are reminded to) setup 2FA
  *
  * @version 1.0.0
- * @package Login With Ajax
+ * @package AJAX Auth
  * @var WP_User $user
  */
 use Login_With_AJAX\TwoFA;
@@ -23,7 +23,7 @@ $site_icon = get_site_icon_url();
 	<?php elseif( $required_ts !== false ) : ?>
 		<p><?php echo sprintf( esc_html__('You have %s to enable 2FA verficiation methods, set one up now to avoid additional interruptions.', 'login-with-ajax'), human_time_diff( time(), $required_ts ) ) ; ?></p>
 	<?php else : ?>
-		<p><?php echo sprintf( esc_html__('You have %s to secure your account, at which point you will not be able to log in without administrator intervention.', 'login-with-ajax'), human_time_diff( time(), $required_ts ) ) ; ?></p>
+		<p><?php esc_html_e('Add a second verification step to keep your account safe, even if your password is compromised. You can set this up now, or skip it and do it later.', 'login-with-ajax'); ?></p>
 	<?php endif; ?>
 	<p class="lwa-2FA-footer-links">
 		<button href="#" class="button button-primary lwa-2FA-setup-start"><?php esc_html_e('Continue', 'login-with-ajax-pro'); ?></button>

@@ -226,7 +226,7 @@ jQuery(document).ready( function($){
 		},
 		getLoginForm : function( form ){
 			let $form = jQuery(form);
-			return jQuery( $form.attr('data-bound-form') );
+			return jQuery(document).find( $form.attr('data-bound-form') );
 		},
 		setCountdown : function( countdown, timeout ){
 			// Set the date we're counting down to
@@ -352,11 +352,11 @@ jQuery(document).ready( function($){
 				// find lwa-2FA-method-setup and slide down
 				method.attr('data-previous-status', method.attr('data-status'));
 				method.removeAttr('data-status');
-				method.find('.lwa-2FA-method-setup-reset').html( button.dataset.cancelTxt );
+				method.find('.lwa-2FA-method-setup-reset').text( button.dataset.cancelTxt );
 			} else {
 				method.attr('data-status', method.attr('data-previous-status'));
 				let status = method.find('.lwa-2FA-method-status');
-				status.find('.lwa-2FA-method-setup-reset').html( button.dataset.modifyTxt );
+				status.find('.lwa-2FA-method-setup-reset').text( button.dataset.modifyTxt );
 			}
 		});
 		container.find('.lwa-2FA-method-content.hidden, .lwa-2FA-method-setup.hidden').hide();
@@ -390,7 +390,7 @@ jQuery(document).ready( function($){
 						if( response.status === 'complete' ) {
 							let setup = method_select.find('.lwa-2FA-method-setup');
 							let button = status_el.find('button');
-							button.html(button.attr('data-modify-txt'));
+							button.text(button.attr('data-modify-txt'));
 							method_select.find('input[data-name][type="text"]').val('');
 						}
 						// create vanilla js custom event and trigger at document level

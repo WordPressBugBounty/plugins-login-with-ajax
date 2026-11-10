@@ -1,10 +1,10 @@
-﻿=== Login With Ajax - Fast Logins, 2FA, Redirects ===
+﻿=== AJAX Auth - Fast Logins, 2FA, Redirects ===
 Contributors: pxlite, msykes, netweblogic
 Tags: login, passkeys, registration, 2FA, security
 Text Domain: login-with-ajax
 Requires at least: 4.8
 Tested up to: 7.0
-Stable tag: 4.5.1
+Stable tag: 4.6
 Requires PHP: 5.2
 License: GPLv2 or later
 
@@ -12,7 +12,9 @@ Add beautiful login forms with smooth AJAX login/registration effects, 2FA suppo
 
 == Description ==
 
-Login With Ajax is for sites that need user logins or registrations and would like to avoid the normal wordpress login pages, or add AJAX effects to the regular login pages. This plugin adds the capability of placing a login widget in the sidebar with smooth AJAX login effects.
+AJAX Auth (formerly Login With AJAX) is for sites that need user logins or registrations and would like to avoid the normal wordpress login pages, or add AJAX effects to the regular login pages. This plugin adds the capability of placing a login widget in the sidebar with smooth AJAX login effects.
+
+https://www.youtube.com/watch?v=1TuHTxCSFLI
 
 Some of the features:
 
@@ -71,7 +73,7 @@ Some of the features:
 First released in 2009, the oldest login plugin for WordPress, regularly maintained and updated since then!
 
 = Pro Add-On Features =
-As of version 4.0, [we now offer a Pro add-on](https://loginwithajax.com/) which extends Login With AJAX with multiple new features:
+As of version 4.0, [we now offer a Pro add-on](https://ajaxauth.com/) which extends AJAX Auth with multiple new features:
 
 * *Security Features* - Harden the security of your login forms
  * 2FA - Additional Two-Factor Authentication Methods:
@@ -88,9 +90,9 @@ As of version 4.0, [we now offer a Pro add-on](https://loginwithajax.com/) which
 = Getting Help/Support =
 <blockquote> Version 4 is a major overhaul of the plugin, which has remained largely unchanged for 11 years yet remained a staple tool for logins to WordPress! Changes include a complete rewrite of login templates updated to modern stadnards and practices, as well as new WP features such as Gutenberg Blocks. </blockquote>
 
-If you're stuck, we strongly suggest visiting our [Documentation Site](https://docs.loginwithajax.com/) which contains exensive information and advice on setup and troubleshooting.
+If you're stuck, we strongly suggest visiting our [Documentation Site](https://docs.ajaxauth.com/) which contains exensive information and advice on setup and troubleshooting.
 
-If you have any problems with the plugin after reading our [Troubleshooting](https://doocs.loginwithajax.com/troubleshooting/), please visit our freely supported [community forums](http://wordpress.org/support/plugin/login-with-ajax), or [Go Pro](https://loginwithajax.com/gopro/) for premium support.
+If you have any problems with the plugin after reading our [Troubleshooting](https://docs.ajaxauth.com/troubleshooting/), please visit our freely supported [community forums](http://wordpress.org/support/plugin/login-with-ajax), or [Go Pro](https://ajaxauth.com/gopro/) for premium support.
 
 == Installation ==
 
@@ -98,15 +100,15 @@ If you have any problems with the plugin after reading our [Troubleshooting](htt
 
 2. Activate the plugin through the 'Plugins' menu in WordPress
 
-3. If you want login/logout redirections, go to Settings > Login With Ajax in the admin area and fill out the form.
+3. If you want login/logout redirections, go to Settings > AJAX Auth in the admin area and fill out the form.
 
-4. Add the login with ajax widget to your sidebar, add a Gutenberg block or [lwa] on your pages, or use login_with_ajax() in your template.
+4. Add the AJAX Auth widget to your sidebar, add a Gutenberg block or [ajaxauth] on your pages, or use login_with_ajax() in your template.
 
-5. For more options and installation instructions, see our [documentation site](https://docs.loginwithajax.com/getting-started/).
+5. For more options and installation instructions, see our [documentation site](https://docs.ajaxauth.com/getting-started/).
 
 == Notes ==
 
-Please visit our [documentation site](https://docs.loginwithajax.com), which is regularly and extensively maintained and updated with all the information relevant to getting started, advanced setup and troubleshooting common issues.
+Please visit our [documentation site](https://docs.ajaxauth.com), which is regularly and extensively maintained and updated with all the information relevant to getting started, advanced setup and troubleshooting common issues.
 
 == Screenshots ==
 
@@ -139,7 +141,7 @@ Please visit our [documentation site](https://docs.loginwithajax.com), which is 
 == Frequently Asked Questions ==
 
 = Language/Translation Support =
-Login With AJAX is fully translated in over 20 languages, partially translated in many more! Our translations are maintained by volunteers, you can also contribute to these translations.
+AJAX Auth is fully translated in over 20 languages, partially translated in many more! Our translations are maintained by volunteers, you can also contribute to these translations.
 
 To view translated languages avaialble or to contribute translations in your language, visit the [WordPress translation portal](https://translate.wordpress.org/projects/wp-plugins/login-with-ajax/). Any translated languages over 90% will be automatically installed with the plugin, for other languages not fully translated, see below:
 
@@ -149,7 +151,7 @@ If not, you can also manually install this, we'll use Russian as an example:
 2. Click the 'Export' link at the bottom of the page, but select 'All Current' and the (.mo) file format, save the downloaded file.
 3. Rename that file in the format of login-with-ajax-LANG.mo, where LANG = your language locale, for example russian is ru_RU so you'd get `login-with-ajax-ru_RU.mo`
 4. Upload that file to the `wp-content/languages/plugins` folder on your WordPress installation.
-5. Your Login With Ajax plugin should now be translated partially into your language.
+5. Your AJAX Auth plugin should now be translated partially into your language.
 
 We suggest you contribute to the WordPress translation project page, anyone with a registered wordpress.org account can suggest new translations!
 
@@ -164,12 +166,31 @@ We do not intend to limit any sort of functionality in the free version, quite t
 That said, doing so takes a lot of time and work, therefore we're offering a Pro version with *additional features* to enhance the login/registration experience and secure your site, along with a more dedicated level of support which we can't offer on the wordpress.org forums. This will enable us to not only keep adding new features, but also maintain a freely supported plugin.
 
 = Something isn't working, what do I do? =
-Check out our [troubleshooting](https://docs.loginwithajax.com/troubleshooting/) and [FAQ](https://docs.loginwithajax.com/faq/) sections, they're both a great place to start. Our [documentation](https://docs.loginwithajax.com) is also likely to answer your questions concering initial setup and customization, if not you can obtain support via our free forums or get in touch directly as a Pro customer.
+Check out our [troubleshooting](https://docs.ajaxauth.com/troubleshooting/) and [FAQ](https://docs.ajaxauth.com/faq/) sections, they're both a great place to start. Our [documentation](https://docs.ajaxauth.com) is also likely to answer your questions concering initial setup and customization, if not you can obtain support via our free forums or get in touch directly as a Pro customer.
 
 = Where do I go for support? =
-We recommend first visiting our [documentation site](https://docs.loginwithajax.com) which includes a troubleshooting section. IF you have a question or comment, we're available both on our [community forums](https://wordpress.org/support/plugin/login-with-ajax/) which we monitor regularly, as well as our [Pro support](https://loginwithajax.com/gopro/) for dedicated one-to-one support.
+We recommend first visiting our [documentation site](https://docs.ajaxauth.com) which includes a troubleshooting section. IF you have a question or comment, we're available both on our [community forums](https://wordpress.org/support/plugin/login-with-ajax/) which we monitor regularly, as well as our [Pro support](https://ajaxauth.com/gopro/) for dedicated one-to-one support.
 
 == Changelog ==
+= 4.6 =
+* Security: fixed an open redirect vulnerability
+* Security: fixed two stored XSS vulnerabilities
+* Security: Pro license and update requests now only go to ajaxauth.com
+* Changed: Login With AJAX is now AJAX Auth, same plugin with a new name
+* Changed: new AJAX Auth logo on the settings page and login block
+* Changed: plugin links now point to ajaxauth.com
+* Added: [ajaxauth], [ajaxauth_2FA_editor] and [ajaxauth_passkeys_editor] shortcodes, a bare [ajaxauth] uses the Default Template setting and existing shortcodes still work
+* Fixed: shortcode ignoring title, color, style, vanilla and logged-in display attributes
+* Fixed: "Disable refresh upon login" not swapping the form for the logged-in widget
+* Fixed: refresh shortcode attribute having no effect
+* Fixed: CSS and JS overrides in wp-content/plugin-templates not loading
+* Fixed: login_with_ajax() template tag ignoring string arguments
+* Fixed: passkeys failing to register on sites with a port in the URL
+* Fixed: wrong message on the optional 2FA setup prompt
+* Fixed: missing logo in the review reminder and Pro license notices
+* Fixed: templates not found when the plugin folder is a symlink
+* Tweaked: passkey prompts now show your site name
+
 = 4.5.1 =
 * fixed fatal error in 4.5 when passkeys are enabled
 

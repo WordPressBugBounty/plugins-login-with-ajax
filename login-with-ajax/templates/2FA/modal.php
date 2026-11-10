@@ -3,7 +3,7 @@
  * 2FA Verification Template, which includes inner modal HTML and is shown when a user selects a verification method and verifies it.
  *
  * @version 1.0.0
- * @package Login With Ajax
+ * @package AJAX Auth
  */
 ?>
 <?php do_action('lwa_2FA_form_header'); ?>

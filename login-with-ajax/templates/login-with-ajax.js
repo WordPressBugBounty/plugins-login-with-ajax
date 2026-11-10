@@ -39,12 +39,35 @@ jQuery(document).ready( function($) {
 				//Login Successful - Extra stuff to do
 				if( data.widget != null ){
 					$.get( data.widget, function(widget_result) {
-						let newWidget = form.closest('.lwa');
-						form.closest('.lwa').innerHTML = widget_result;
-						let $newWidget = $(newWidget);
-						var lwaSub = $newWidget.find('.lwa-title').show();
-						var lwaOrg = $newWidget.parent().find('.lwa-title');
-						lwaOrg.replaceWith(lwaSub);
+						let newWidget = $( $.parseHTML( String(widget_result).trim() ) );
+						// nothing usable came back, so show the logged in state the ordinary way
+						if( newWidget.filter('*').length === 0 ){
+							window.location.reload();
+							return;
+						}
+						let loginForm = $(form);
+						// a 2FA step is submitted from its own modal, the widget to swap belongs to the login form that opened it
+						if( loginForm.attr('data-bound-form') ){
+							let boundForm = $(document).find( loginForm.attr('data-bound-form') );
+							loginForm.closest('.lwa-modal-overlay').removeClass('active').find('.lwa-modal-popup').removeClass('active');
+							if( boundForm.length > 0 ) loginForm = boundForm;
+						}
+						let oldWidget = loginForm.closest('.lwa-wrapper');
+						if( oldWidget.length === 0 ) oldWidget = loginForm.closest('.lwa');
+						// a form inside a modal template is replaced along with the button that opens it
+						let overlay = loginForm.closest('.lwa-modal-overlay');
+						if( overlay.length > 0 ){
+							let trigger = $('.lwa-modal-trigger').filter( function(){ return $(this).data('modal-id') === overlay.attr('id'); } );
+							if( trigger.length > 0 ){
+								oldWidget = trigger.first();
+								overlay.remove();
+							}
+						}
+						oldWidget.replaceWith( newWidget );
+						$(document).triggerHandler('lwa_widget_replaced', [newWidget, data]);
+					}).fail( function(){
+						// the user is logged in at this point, a reload is the safe way to show it
+						window.location.reload();
 					});
 				}else{
 					if(data.redirect == null){
@@ -156,7 +179,7 @@ const lwa_init_minimalistic = function(){
 };
 
 /**
- * Various functions related to the submission and execution of a Login With AJAX form.
+ * Various functions related to the submission and execution of a AJAX Auth form.
  * @type {{submit: LoginWithAJAX.submit, addStatusElement: LoginWithAJAX.addStatusElement, handleStatus: LoginWithAJAX.handleStatus, finish: LoginWithAJAX.finish}}
  */
 const LoginWithAJAX = {
@@ -255,7 +278,7 @@ const LoginWithAJAX = {
 	 * @param {jQuery} statusElement The status element in a form where error or success messages are to be added based on the response.
 	 */
 	handleStatus : function( response, statusElement ){
-		this.finish();
+		LoginWithAJAX.finish();
 		statusElement = jQuery(statusElement);
 		if(response.result === true){
 			//Login Successful
@@ -332,4 +355,4 @@ const LoginWithAJAX = {
 	},
 };
 // shortcut - legacy
-const lwaAjax = LoginWithAJAX.handleStatus;
+const lwaAjax = function( response, statusElement ){ return LoginWithAJAX.handleStatus( response, statusElement ); };

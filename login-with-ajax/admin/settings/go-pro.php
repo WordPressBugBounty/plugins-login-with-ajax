@@ -2,9 +2,9 @@
 // TODO add upgrade nudge on OG for duplicity
 ?>
 <div class="mtm-menu-go-pro mtm-menu-group">
-	<p>Login With AJAX has been freely developed, maintained and supported since 2009. We've decided to provide premium support and create some new premium features to enable us to keep doing so for more years to come!</p>
+	<p>AJAX Auth has been freely developed, maintained and supported since 2009. We've decided to provide premium support and create some new premium features to enable us to keep doing so for more years to come!</p>
 	<p>
-		<a href="https://loginwithajax.com?utm_source=gopro-tab&utm_medium=plugin&utm_campaign=plugin" target="_blank">Get the Pro version</a> and unlock new features! See below for a feature list comparison, hover over the feature for more info.
+		<a href="https://ajaxauth.com?utm_source=gopro-tab&utm_medium=plugin&utm_campaign=plugin" target="_blank">Get the Pro version</a> and unlock new features! See below for a feature list comparison, hover over the feature for more info.
 	</p>
 
 	<table class="features">
@@ -43,7 +43,7 @@
 				<td><span class="dashicons dashicons-yes-alt"></span></td>
 			</tr>
 			<tr>
-				<th data-title="Use [lwa] on your site to display a login form anywhere you'd like.">Shortcode</th>
+				<th data-title="Use [ajaxauth] on your site to display a login form anywhere you'd like.">Shortcode</th>
 				<td><span class="dashicons dashicons-yes-alt"></span></td>
 				<td><span class="dashicons dashicons-yes-alt"></span></td>
 			</tr>
@@ -162,7 +162,7 @@
 				</th>
 				<th>
 					<span>From $49</span><span class="deal">Limited Offer!</span>
-					<a class="button-primary" href="https://loginwithajax.com/gopro/?utm_source=gopro-tab&utm_medium=plugin&utm_campaign=plugin" target="_blank">Go Pro!</a>
+					<a class="button-primary" href="https://ajaxauth.com/gopro/?utm_source=gopro-tab&utm_medium=plugin&utm_campaign=plugin" target="_blank">Go Pro!</a>
 				</th>
 			</tr>
 		</tfoot>

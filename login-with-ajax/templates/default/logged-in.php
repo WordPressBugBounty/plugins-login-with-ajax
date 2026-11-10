@@ -2,12 +2,12 @@
 /*
  * This is the page users will see logged out.
  * You can edit this, but for upgrade safety you should copy and modify this file into a folder.
- * See https://docs.loginwithajax.com/advanced/templates/ for more information.
+ * See https://docs.ajaxauth.com/advanced/templates/ for more information.
 */
 /* @var array $lwa  Array of data supplied to widget */
 ?>
 <div class="lwa-wrapper lwa-bones">
-	<div class="lwa lwa-<?php echo esc_attr($lwa['template']); ?> pixelbones lwa-logged-in <?php if( !empty($lwa['loggedin_vertical']) ) echo 'vertical'; ?>" <?php if( !empty($lwa['css_style']) ) echo "style='{$lwa['css_style']}'" ?>>
+	<div class="lwa lwa-<?php echo esc_attr($lwa['template']); ?> pixelbones lwa-logged-in <?php if( !empty($lwa['loggedin_vertical']) ) echo 'vertical'; ?>" <?php if( !empty($lwa['css_style']) ) echo 'style="'. esc_attr($lwa['css_style']) .'"'; ?>>
 		<?php
 			$user = wp_get_current_user();
 		?>

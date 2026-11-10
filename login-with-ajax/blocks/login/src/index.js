@@ -1,7 +1,9 @@
 import { registerBlockType, createBlock } from '@wordpress/blocks';
 import Edit from './edit';
+import icon from './icon';
 
 registerBlockType('login-with-ajax/login', {
+	icon,
 	edit: Edit,
 	save() { return null; }, // we're rendering in PHP
 	transforms: {

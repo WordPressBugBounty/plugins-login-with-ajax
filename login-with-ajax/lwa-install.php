@@ -44,7 +44,7 @@ Admin_Notices::$option_notices_name = 'lwa_admin_notices';
 //add notices and upgrade logic
 if( !get_option('lwa_version') ){
 	// add welcome message
-	$message = esc_html__("You have installed Login With AJAX 4.2! Check out our %s for options and documentation links, also look out for the new Login With AJAX blocks on the widget and page builders.", 'login-with-ajax');
+	$message = esc_html__("You have installed AJAX Auth! Check out our %s for options and documentation links, also look out for the new AJAX Auth blocks on the widget and page builders.", 'login-with-ajax');
 	$settings_url = '<a href="'. admin_url('options-general.php?page=login-with-ajax') .'">'. esc_html__("settings page", 'login-with-ajax') .'</a>';
 	$message = sprintf($message, $settings_url);
 	
@@ -63,9 +63,9 @@ if( !get_option('lwa_version') ){
 		$lwa_data['notification_message'] = str_replace('%PASSWORD%', '%PASSWORDURL%', $lwa_data['notification_message']);
 		$lwa_data['ajaxify'] = array('wp_login' => true);
 		
-		$message = '<strong>' .esc_html__('You have upgraded to Login With AJAX 4.0!', 'login-with-ajax'). '</strong></p><p>';
+		$message = '<strong>' .esc_html__('You have upgraded to AJAX Auth 4.0!', 'login-with-ajax'). '</strong></p><p>';
 		$message .= esc_html__('We have completely revamped our templates as well as adding Gutenberg support. You are currently on a backwards-compatible legacy mode which you can disable from the %s and upgrade to our new templates.', 'login-with-ajax') .'</p><p>';
-		$message .= esc_html__('Check out our %s and also look out for the new Login With AJAX blocks on the widget and page builders.', 'login-with-ajax');
+		$message .= esc_html__('Check out our %s and also look out for the new AJAX Auth blocks on the widget and page builders.', 'login-with-ajax');
 		$settings_url = '<a href="'. admin_url('options-general.php?page=login-with-ajax') .'">'. esc_html__("settings page", 'login-with-ajax') .'</a>';
 		$message = sprintf($message, $settings_url, $settings_url);
 		
@@ -73,7 +73,7 @@ if( !get_option('lwa_version') ){
 		Admin_Notices::add( $Admin_Notice );
 		
 		
-		$message = '<strong>' .esc_html__('Welcome to the redesigned Login With AJAX settings page!', 'login-with-ajax'). '</strong></p><p>';
+		$message = '<strong>' .esc_html__('Welcome to the redesigned AJAX Auth settings page!', 'login-with-ajax'). '</strong></p><p>';
 		$message .= esc_html__('You are currently on a backwards-compatible legacy mode. You can disable via the checkbox below and save your settings, you will then be able to choose from our new templates.', 'login-with-ajax') .'</p><p>';
 		$message = sprintf($message, $settings_url, $settings_url);
 		
@@ -110,11 +110,18 @@ if( !get_option('lwa_version') ){
 		$lwa_data = array_merge( $new_defaults, $lwa_data );
 		update_option('lwa_data', $lwa_data);
 		
-		$message = '<strong>' .esc_html__('You have upgraded to Login With AJAX 4.2!', 'login-with-ajax'). '</strong></p><p>';
+		$message = '<strong>' .esc_html__('You have upgraded to AJAX Auth 4.2!', 'login-with-ajax'). '</strong></p><p>';
 		$message .= esc_html__('We have added a completely new feature, 2FA authentication!', 'login-with-ajax') .'</p><p>';
-		$message .= esc_html__('Check out our %s and also look out for the new Login With AJAX blocks on the widget and page builders.', 'login-with-ajax');
+		$message .= esc_html__('Check out our %s and also look out for the new AJAX Auth blocks on the widget and page builders.', 'login-with-ajax');
 		$settings_url = '<a href="'. admin_url('options-general.php?page=login-with-ajax') .'">'. esc_html__("settings page", 'login-with-ajax') .'</a>';
 		$message = sprintf($message, $settings_url, $settings_url);
+		
+		$Admin_Notice = new Admin_Notice('upgrade', 'info', $message, 'all' );
+		Admin_Notices::add( $Admin_Notice );
+	}
+	if( version_compare( get_option('lwa_version',0), '4.6', '<' ) ){
+		$message = '<strong>' .esc_html__('Login With AJAX is now AJAX Auth!', 'login-with-ajax'). '</strong></p><p>';
+		$message .= sprintf( esc_html__('Same plugin with a new name, your settings, templates and existing shortcodes all keep working. You can now also use %s in place of %s.', 'login-with-ajax'), '<code>[ajaxauth]</code>', '<code>[lwa]</code>' );
 		
 		$Admin_Notice = new Admin_Notice('upgrade', 'info', $message, 'all' );
 		Admin_Notices::add( $Admin_Notice );

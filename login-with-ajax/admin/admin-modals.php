@@ -95,18 +95,18 @@ class Admin_Modals {
 		?>
 		<div style="display: grid; grid-template-columns: 80px auto; grid-gap: 20px;">
 			<div style="align-self: center; text-align: center; padding-left: 10px;">
-				<img src="<?php echo LOGIN_WITH_AJAX_URL . '/assets/images/star-halo.svg'; ?>" style="width:75%; opacity:0.7;">
-				<img src="<?php echo LOGIN_WITH_AJAX_URL . '/assets/images/icon.svg'; ?>" style="width: 100%;">
+				<img src="<?php echo LOGIN_WITH_AJAX_URL . 'assets/images/star-halo.svg'; ?>" style="width:75%; opacity:0.7;">
+				<img src="<?php echo LOGIN_WITH_AJAX_URL . 'assets/images/ajax-auth-mark.svg'; ?>" style="width: 100%;">
 			</div>
 			<div>
-				<p><?php esc_html_e('Pardon the interruption... we hope you\'re enjoying Login With AJAX, and if so, we\'d really appreciate a positive review on the wordpress.org repository!', 'login-with-ajax'); ?></p>
+				<p><?php esc_html_e('Pardon the interruption... we hope you\'re enjoying AJAX Auth, and if so, we\'d really appreciate a positive review on the wordpress.org repository!', 'login-with-ajax'); ?></p>
 				<p>
-					<?php esc_html_e('Login With AJAX has been maintained, developed and supported for free since it was released in 2008, positive reviews are one that help us keep going.', 'login-with-ajax'); ?>
+					<?php esc_html_e('AJAX Auth has been maintained, developed and supported for free since it was released in 2008, positive reviews are one that help us keep going.', 'login-with-ajax'); ?>
 					<?php esc_html_e('If you could spare a few minutes, we would appreciate it if you could please leave us a review.', 'login-with-ajax'); ?>
 				</p>
 				<a href="https://wordpress.org/support/plugin/login-with-ajax/reviews/?filter=5#new-topic-0" class="button button-primary input" target="_blank" style="margin:10px 10px 10px 0; --accent-color:#429543; --accent-color-hover:#429543;">
 					Leave a Review
-					<img src="<?php echo LOGIN_WITH_AJAX_URL . '/assets/images/five-stars.svg'; ?>" style="max-height:10px; width:50px; margin-left:5px;">
+					<img src="<?php echo LOGIN_WITH_AJAX_URL . 'assets/images/five-stars.svg'; ?>" style="max-height:10px; width:50px; margin-left:5px;">
 				</a>
 				<a href="<?php echo esc_url( admin_url('admin-ajax.php?action=lwa_dismiss_admin_notice&notice=review-nudge&redirect=1&nonce='.wp_create_nonce('lwa_dismiss_admin_noticereview-nudge'. get_current_user_id()) ) ); ?>" class="button button-secondary dismiss-notice" style="margin:10px 0;"><?php esc_html_e('Dismiss', 'login-with-ajax'); ?></a>
 			</div>
@@ -120,14 +120,14 @@ class Admin_Modals {
 		?>
 		<div style="display: grid; grid-template-columns: 80px auto; grid-gap: 20px;">
 			<div style="text-align: center; padding-left: 10px; padding-top:10px;">
-				<img src="<?php echo LOGIN_WITH_AJAX_URL . '/assets/images/icon.svg'; ?>" style="width: 100%;">
+				<img src="<?php echo LOGIN_WITH_AJAX_URL . 'assets/images/ajax-auth-mark.svg'; ?>" style="width: 100%;">
 			</div>
 			<div>
-				<h3>Login With AJAX Pro - Offer Ends Soon!</h3>
+				<h3>AJAX Auth Pro - Offer Ends Soon!</h3>
 				<p>Pardon the interruption.... we'd like to make sure you're aware of our limited time deal. Purchase a license, renew or upgrade and get up to 50% off!</p>
 				<p>LWA 2.0 introduces some amazing new login and security features such as  Passkeys (one-click logins) and additional 2FA methods including SMS, WhatsApp and Telegram.</p>
 				<p>We hope you're enjoying the plugin and if you're at all considering going Pro, you still have time to make the best of this limited opportunity!</p>
-				<a href="https://loginwithajax.com/gopro/?utm_source=login-with-ajax&utm_medium=plugin-notice&utm_campaign=plugins" class="button button-primary" target="_blank" style="margin:10px auto; --accent-color:#429543; --accent-color-hover:#429543;">Go Pro!</a>
+				<a href="https://ajaxauth.com/gopro/?utm_source=login-with-ajax&utm_medium=plugin-notice&utm_campaign=plugins" class="button button-primary" target="_blank" style="margin:10px auto; --accent-color:#429543; --accent-color-hover:#429543;">Go Pro!</a>
 				<a href="<?php echo esc_url( admin_url('admin-ajax.php?action=lwa_dismiss_admin_notice&notice=promo-popup&redirect=1&nonce='.wp_create_nonce('lwa_dismiss_admin_noticepromo-popup'. get_current_user_id()) ) ); ?>" class="button button-secondary dismiss-notice" style="margin:10px 0;"><?php esc_html_e('Dismiss', 'login-with-ajax'); ?></a>
 			</div>
 		</div><!-- content -->
@@ -140,13 +140,13 @@ class Admin_Modals {
 		?>
 		<div style="display: grid; grid-template-columns: 80px auto; grid-gap: 20px;">
 			<div style="text-align: center; padding-left: 10px; padding-top:10px;">
-				<img src="<?php echo LOGIN_WITH_AJAX_URL . '/assets/images/icon.svg'; ?>" style="width: 100%;">
+				<img src="<?php echo LOGIN_WITH_AJAX_URL . 'assets/images/ajax-auth-mark.svg'; ?>" style="width: 100%;">
 			</div>
 			<div>
-				<h3>Login With AJAX Pro - License Expired</h3>
+				<h3>AJAX Auth Pro - License Expired</h3>
 				<p>Your Pro license has expired, meaning you will not have access to our latest updates and Pro support. Please renew your license to get access to the latest features and our Pro support.</p>
 				<p>We are regularly adding new features, don't miss out and renew now!</p>
-				<a href="https://loginwithajax.com/gopro/?utm_source=login-with-ajax&utm_medium=plugin-notice&utm_campaign=plugins" class="button button-primary input" target="_blank" style="margin-right:10px; --accent-color:#429543; --accent-color-hover:#429543;">Renew Now!</a>
+				<a href="https://ajaxauth.com/gopro/?utm_source=login-with-ajax&utm_medium=plugin-notice&utm_campaign=plugins" class="button button-primary input" target="_blank" style="margin-right:10px; --accent-color:#429543; --accent-color-hover:#429543;">Renew Now!</a>
 			</div>
 		</div><!-- content -->
 		<?php
@@ -160,13 +160,13 @@ class Admin_Modals {
 		?>
 		<div style="display: grid; grid-template-columns: 80px auto; grid-gap: 20px;">
 			<div style="text-align: center; padding-left: 10px; padding-top:10px;">
-				<img src="<?php echo LOGIN_WITH_AJAX_URL . '/assets/images/icon.svg'; ?>" style="width: 100%;">
+				<img src="<?php echo LOGIN_WITH_AJAX_URL . 'assets/images/ajax-auth-mark.svg'; ?>" style="width: 100%;">
 			</div>
 			<div>
-				<h3>Login With AJAX Pro - Your License is Expiring Soon...</h3>
+				<h3>AJAX Auth Pro - Your License is Expiring Soon...</h3>
 				<p>Your Pro license is expiring on <?php echo $expiry_date; ?>. By renewing on time, you maintain your current plan pricing and conditions.</p>
 				<p>Renew now to maintain access to our latest updates and Pro support. We hope you're finding the plugin useful and we look forward to providing you with more exciting new features!</p>
-				<a href="https://loginwithajax.com/gopro/?utm_source=login-with-ajax&utm_medium=plugin-notice&utm_campaign=plugins" class="button button-primary input" target="_blank" style="margin-right:10px; --accent-color:#429543; --accent-color-hover:#429543;">Renew Now!</a>
+				<a href="https://ajaxauth.com/gopro/?utm_source=login-with-ajax&utm_medium=plugin-notice&utm_campaign=plugins" class="button button-primary input" target="_blank" style="margin-right:10px; --accent-color:#429543; --accent-color-hover:#429543;">Renew Now!</a>
 			</div>
 		</div><!-- content -->
 		<?php

@@ -12,7 +12,7 @@ class Admin {
 	public static function admin_settings(){
 		$lwa = get_option('lwa_data', array());
 		$TwoFA = !empty($lwa['2FA']) ? $lwa['2FA']: array('enabled' => false);
-		$docs_link = '<a href="https://docs.loginwithajax.com/security/2FA/" target="_blank">'. esc_html__('documentation','login-with-ajax-pro') .'</a>';
+		$docs_link = '<a href="https://docs.ajaxauth.com/security/2FA/" target="_blank">'. esc_html__('documentation','login-with-ajax-pro') .'</a>';
 		?>
 		<h3><?php esc_html_e("2-Factor Authentication (2FA)", 'login-with-ajax'); ?></h3>
 		<p><em><?php echo sprintf(esc_html__("Enable 2-Factor Authentication and require users to provide a verification code once successfully logging in. For more information and recommendations please see our %s page.", 'login-with-ajax-pro'), $docs_link); ?></em></p>
@@ -39,7 +39,7 @@ class Admin {
 						</select>
 						<p><em><?php esc_html_e("You can choose to require 2FA independently or allow other deciding factors such as Recaptcha v3 or limited login attempts to require a 2FA verification.", 'login-with-ajax-pro'); ?></em></p>
 						<?php if(  !defined('LWA_PRO_VERSION') && (!defined('LWA_REMOVE_PRO_NAGS') || !LWA_REMOVE_PRO_NAGS)  ): ?>
-							<p><em><?php echo sprintf(esc_html__('Other security features are available as part of our Pro plugin - %s', 'login-with-ajax'), '<a href="https://loginwithajax.com/gopro/" target="_blank">'. esc_html__('Go Pro!', 'login-with-ajax') . '</a>'); ?></em></p>
+							<p><em><?php echo sprintf(esc_html__('Other security features are available as part of our Pro plugin - %s', 'login-with-ajax'), '<a href="https://ajaxauth.com/gopro/" target="_blank">'. esc_html__('Go Pro!', 'login-with-ajax') . '</a>'); ?></em></p>
 						<?php endif; ?>
 					</td>
 				</tr>
@@ -69,7 +69,7 @@ class Admin {
 						<?php endforeach; ?>
 						<p><em><?php esc_html_e('Choose the 2FA methods you would like to enable for this site. If more than one option is enabled and applicable to the user, verification method can be changed during login.', 'login-with-ajax-pro'); ?></em></p>
 						<?php if(  !defined('LWA_PRO_VERSION') && (!defined('LWA_REMOVE_PRO_NAGS') || !LWA_REMOVE_PRO_NAGS)  ): ?>
-							<p><em><?php echo sprintf(esc_html__('Additional 2FA methods are available as part of our Pro plugin - %s', 'login-with-ajax'), '<a href="https://loginwithajax.com/gopro/" target="_blank">'. esc_html__('Go Pro!', 'login-with-ajax') . '</a>'); ?></em></p>
+							<p><em><?php echo sprintf(esc_html__('Additional 2FA methods are available as part of our Pro plugin - %s', 'login-with-ajax'), '<a href="https://ajaxauth.com/gopro/" target="_blank">'. esc_html__('Go Pro!', 'login-with-ajax') . '</a>'); ?></em></p>
 						<?php endif; ?>
 					</td>
 				</tr>

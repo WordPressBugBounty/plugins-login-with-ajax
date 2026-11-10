@@ -68,6 +68,10 @@ class Server {
 				// get domain of site
 				$rpId = preg_replace('/^https?:\/\//', '', get_site_url());
 				$rpId = preg_replace('/\/.*$/', '', $rpId); // just the domain we need
+				$rpId = preg_replace('/:\d+$/', '', $rpId); // a relying party ID is a host name only, browsers reject one with a port
+				// the relying party name is what a passkey manager shows the user, fall back to the host if the site has no title
+				$rpName = wp_specialchars_decode( get_bloginfo('name'), ENT_QUOTES );
+				if( $rpName === '' ) $rpName = $rpId;
 				
 				// types selected on front end - all for nwo
 				$typeUsb = true;
@@ -91,7 +95,7 @@ class Server {
 				
 				// new Instance of the server library.
 				// make sure that $rpId is the domain name.
-				$WebAuthn = new WebAuthn('WebAuthn Library', $rpId, $formats);
+				$WebAuthn = new WebAuthn($rpName, $rpId, $formats);
 				
 				// add root certificates to validate new registrations
 				/*
@@ -266,6 +270,8 @@ class Server {
 					}
 					// handle redirect_to
 					if( !empty($post->redirect_to) ) $_REQUEST['redirect_to'] = $post->redirect_to;
+					// handle a per-form refresh choice the same way a regular login does
+					if( isset($post->refresh) ) $_REQUEST['refresh'] = empty($post->refresh) ? 0 : 1;
 					// return login result like LWA does
 					wp_send_json( \LoginWithAjax::login_result( $user ) );
 				}

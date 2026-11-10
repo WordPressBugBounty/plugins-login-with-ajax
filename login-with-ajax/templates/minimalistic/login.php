@@ -2,7 +2,7 @@
 /*
  * This is the page users will see logged out.
  * You can edit this, but for upgrade safety you should copy and modify this file into a folder.
- * See https://docs.loginwithajax.com/advanced/templates/ for more information.
+ * See https://docs.ajaxauth.com/advanced/templates/ for more information.
  *
  * This template copies the default template and with a little jQuery the label is switched above the input field
 */

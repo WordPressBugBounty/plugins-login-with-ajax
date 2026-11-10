@@ -3,7 +3,7 @@
  * 2FA Verification Template, which includes inner modal HTM and is shown when a user selects a verification method and verifies it.
  *
  * @version 1.0.0
- * @package Login With Ajax
+ * @package AJAX Auth
  */
 $methods = \Login_With_AJAX\TwoFA::get_available_methods();
 $site_icon = get_site_icon_url();

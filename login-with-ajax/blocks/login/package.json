@@ -1,7 +1,7 @@
 {
 	"name": "lwa-login",
 	"version": "0.1.0",
-	"description": "Login With AJAX block to generate login widget shortcode.",
+	"description": "AJAX Auth block to generate login widget shortcode.",
 	"author": "Pixelite SL",
 	"license": "GPL-2.0-or-later",
 	"main": "build/index.js",

@@ -3,7 +3,7 @@
  * 2FA Setup template, confirming setup of 2FA for an account user
  *
  * @version 1.0.0
- * @package Login With Ajax
+ * @package AJAX Auth
  * @var WP_User $user
  */
 $site_icon = get_site_icon_url();

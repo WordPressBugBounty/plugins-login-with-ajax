@@ -64,8 +64,8 @@ $templates = \LoginWithAjax::get_templates_data();
 			</th>
 			<td>
 				<input style="margin:0px; padding:0px; width:auto;" type="checkbox" name="lwa_legacy" value='1' class='wide' <?php echo ( !empty($lwa_data['legacy']) ) ? 'checked':''; ?>>
-				<p><em><?php esc_html_e("Login with AJAX 4.0 introduces new templates, replacing the previous templates. Leave this enabled if you still use any of these old templates in shortcodes or widgets and don't want to change them automatically. This may also apply to any templates you've overriden or created in your own themes.", 'login-with-ajax'); ?></em></p>
-				<p><em><?php echo sprintf(esc_html("Please see our %s on our documentation site for more information about what has changed and how it may affect you.", 'login-with-ajax'), '<a href="https://docs.loginwithajax.com/migrate-v3/">'. esc_html('Migration Guide') .'</a>'); ?></em></p>
+				<p><em><?php esc_html_e("AJAX Auth 4.0 introduces new templates, replacing the previous templates. Leave this enabled if you still use any of these old templates in shortcodes or widgets and don't want to change them automatically. This may also apply to any templates you've overriden or created in your own themes.", 'login-with-ajax'); ?></em></p>
+				<p><em><?php echo sprintf(esc_html("Please see our %s on our documentation site for more information about what has changed and how it may affect you.", 'login-with-ajax'), '<a href="https://docs.ajaxauth.com/migrate-v3/">'. esc_html('Migration Guide') .'</a>'); ?></em></p>
 			</td>
 		</tr>
 	<?php endif; ?>

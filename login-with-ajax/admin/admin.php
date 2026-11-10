@@ -52,7 +52,7 @@ class Admin{
 	}
 	
 	public static function menus(){
-		$page = add_options_page('Login With Ajax', 'Login With Ajax', 'manage_options', 'login-with-ajax', array('\Login_With_AJAX\Admin','options'));
+		$page = add_options_page('AJAX Auth', 'AJAX Auth', 'manage_options', 'login-with-ajax', array('\Login_With_AJAX\Admin','options'));
 		add_action('admin_head-'.$page, array('\Login_With_AJAX\Admin','options_head'));
 	}
 
@@ -167,7 +167,7 @@ class Admin{
 		$lwa_submit_button = '<p class="lwa-actions"><button type="submit" class="button-primary">'. esc_html__('Save Changes','login-with-ajax') .'</button></p>';
 		?>
 		<div class="wrap tabs-active lwa">
-			<h1><?php esc_html_e('Login With Ajax', 'login-with-ajax'); ?></h1>
+			<h1><img src="<?php echo esc_url( LOGIN_WITH_AJAX_URL . 'assets/images/ajax-auth-logo.svg' ); ?>" alt="AJAX Auth" width="211" height="60" style="display:block;max-width:100%;height:auto;"></h1>
 			<h2 class="nav-tab-wrapper">
 				<?php
 				$tabs = $fixed_tabs = array(

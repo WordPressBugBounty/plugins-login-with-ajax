@@ -22,7 +22,7 @@ class LoginWithAjaxWidget extends WP_Widget {
     		'description' => __( "Login widget with AJAX capabilities.", 'login-with-ajax'),
 		    'show_instance_in_rest' => true,
 		);
-        parent::__construct(false, 'Login With Ajax', $widget_ops);
+        parent::__construct(false, 'AJAX Auth', $widget_ops);
     }
 
     /** @see WP_Widget::widget */
@@ -32,7 +32,7 @@ class LoginWithAjaxWidget extends WP_Widget {
     	if( !is_user_logged_in() && !empty($instance['title']) ){
 		    echo $args['before_title'];
 		    echo '<span class="lwa-title">';
-		    echo apply_filters('widget_title',$instance['title'], $instance, $this->id_base);
+		    echo wp_kses_post( apply_filters('widget_title',$instance['title'], $instance, $this->id_base) );
 		    echo '</span>';
 		    echo $args['after_title'];
 		    // unset title, set to widget_title for future reference
@@ -41,7 +41,7 @@ class LoginWithAjaxWidget extends WP_Widget {
     	}elseif( is_user_logged_in() && !empty($instance['title_loggedin']) ) {
 		    echo $args['before_title'];
 		    echo '<span class="lwa-title">';
-		    echo str_replace('%username%', \LoginWithAjax::$current_user->display_name, $instance['title_loggedin']);
+		    echo wp_kses_post( str_replace('%username%', \LoginWithAjax::$current_user->display_name, $instance['title_loggedin']) );
 		    echo '</span>';
 		    echo $args['after_title'];
 		    // unset title, set to widget_title for future reference

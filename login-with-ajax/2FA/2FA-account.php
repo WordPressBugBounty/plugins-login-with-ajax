@@ -25,6 +25,7 @@ class Account {
 		add_action('wp_ajax_lwa_2FA_setup_verify', array( static::class, 'setup_verify_ajax'));
 		add_action('lwa_ajax_2FA_setup_save', array( static::class, 'setup_save_ajax'));
 		// add shortcode to show editor
+		add_shortcode('ajaxauth_2FA_editor', array( static::class, 'shortcode' ) );
 		add_shortcode('lwa_2FA_editor', array( static::class, 'shortcode' ) );
 		
 		// BP integration

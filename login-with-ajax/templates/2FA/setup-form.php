@@ -3,7 +3,7 @@
  * 2FA setup form, including the available methods to the user
  *
  * @version 1.0.0
- * @package Login With Ajax
+ * @package AJAX Auth
  * @var WP_User $user
  */
 

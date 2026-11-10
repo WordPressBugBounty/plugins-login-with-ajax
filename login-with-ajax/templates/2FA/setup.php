@@ -3,7 +3,7 @@
  * 2FA Verification Template, which includes inner modal HTML and is shown when a user selects a verification method and verifies it.
  *
  * @version 1.0.0
- * @package Login With Ajax
+ * @package AJAX Auth
  * @var WP_User $user
  */
 include(LoginWithAjax::locate_template('2FA/setup-intro.php'));

@@ -1,10 +1,10 @@
 <?php
 /*
-Plugin Name: Login With Ajax
-Plugin URI: https://loginwithajax.com
+Plugin Name: AJAX Auth
+Plugin URI: https://ajaxauth.com
 Description: Ajax driven login widget. Customisable from within your template folder, and advanced settings from the admin area.
 Author: Pixelite
-Version: 4.5.1
+Version: 4.6
 Author URI: https://pixelite.com/?utm_source=login-with-ajax&utm_medium=plugin-header&utm_campaign=plugins
 Tags: Login, Ajax, Redirect, BuddyPress, MU, MultiSite, security, sidebar, admin, widget
 Text Domain: login-with-ajax
@@ -24,7 +24,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-define('LOGIN_WITH_AJAX_VERSION', '4.5.1');
+define('LOGIN_WITH_AJAX_VERSION', '4.6');
 define('LOGIN_WITH_AJAX_PATH', dirname(__FILE__));
 define('LOGIN_WITH_AJAX_URL', trailingslashit(plugin_dir_url(__FILE__)));
 
@@ -78,6 +78,11 @@ class LoginWithAjax {
 	public static $localized;
 	
 	public static $compat_mode = false;
+	/**
+	 * Set while a login form is being output with its own refresh choice, null otherwise.
+	 * @var int|null
+	 */
+	public static $refresh_field = null;
 
 	// Actions to take upon initial action hook
 	public static function init(){
@@ -134,6 +139,7 @@ class LoginWithAjax {
 			add_action('wp_logout', '\LoginWithAjax::logoutRedirect');
 			add_filter('logout_url', '\LoginWithAjax::logoutUrl');
 			add_filter('login_redirect', '\LoginWithAjax::loginRedirect', 1, 3);
+			add_shortcode('ajaxauth', '\LoginWithAjax::shortcode');
 			add_shortcode('login-with-ajax', '\LoginWithAjax::shortcode');
 			add_shortcode('lwa', '\LoginWithAjax::shortcode');
 		}
@@ -297,7 +303,7 @@ class LoginWithAjax {
 			$return['message'] = __("Login Successful, redirecting...",'login-with-ajax');
 			//Do a redirect if necessary
 			$redirect = self::getLoginRedirect(self::$current_user);
-			if( !empty($_REQUEST['redirect_to']) ) $redirect= wp_sanitize_redirect($_REQUEST['redirect_to']);
+			if( !empty($_REQUEST['redirect_to']) ) $redirect= wp_validate_redirect( wp_sanitize_redirect($_REQUEST['redirect_to']), $redirect );
 			if( $redirect != '' ){
 				$return['redirect'] = $redirect;
 			}
@@ -547,15 +553,25 @@ class LoginWithAjax {
 		$lwa = wp_parse_args($instance, self::$data);
 		$lwa['id'] = !empty($instance['id']) ? absint($instance['id']) : rand(0, 100000); // for html id fields to be unique
 		$lwa['css_vars'] = array();
-		$lwa['css_style'] = '';
+		// css_style and css_vars can arrive from shortcode or block attributes, and theme template overrides may print css_style unescaped, so only plain CSS gets through
+		$lwa['css_style'] = !empty($instance['css_style']) ? static::sanitize_css_style($instance['css_style']) : '';
+		if( !empty($instance['css_vars']) && is_array($instance['css_vars']) ){
+			foreach( $instance['css_vars'] as $css_var => $css_value ){
+				$css_var = preg_replace('/[^a-zA-Z0-9_-]/', '', ltrim((string) $css_var, '-'));
+				$css_value = static::sanitize_css_value($css_value);
+				if( $css_var !== '' && $css_value !== '' ) $lwa['css_vars'][$css_var] = $css_value;
+			}
+		}
 		//Create HSL CSS for barebones color customization
 		if( !empty($lwa['template_color']) ){
 			if( !is_array($lwa['template_color']) ){
 				$hsl = explode(',', str_replace(' ', '', $lwa['template_color']));
 				if( count($hsl) === 3 ) {
-					$lwa['template_color']['H'] = $hsl[0];
-					$lwa['template_color']['S'] = $hsl[1];
-					$lwa['template_color']['L'] = $hsl[2];
+					$lwa['template_color'] = array(
+						'H' => $hsl[0],
+						'S' => $hsl[1],
+						'L' => $hsl[2],
+					);
 				}elseif( preg_match('/^#?[0-9A-Za-z]{3,6}$/', $lwa['template_color']) ){
 					// we assume it's hex, convert it to HSL
 					require_once('assets/php/color.php');
@@ -573,9 +589,10 @@ class LoginWithAjax {
 					$lwa['template_color'] = self::$data['template_color'];
 				}
 			}
-			$lwa['css_vars']['accent-hue'] = $lwa['template_color']['H'];
-			$lwa['css_vars']['accent-s'] = $lwa['template_color']['S'].'%';
-			$lwa['css_vars']['accent-l'] = $lwa['template_color']['L'].'%';
+			// block attributes reach here unfiltered and theme template overrides may still print css_style raw, so numbers only regardless of the escaping in our own templates
+			$lwa['css_vars']['accent-hue'] = floatval($lwa['template_color']['H']);
+			$lwa['css_vars']['accent-s'] = floatval($lwa['template_color']['S']).'%';
+			$lwa['css_vars']['accent-l'] = floatval($lwa['template_color']['L']).'%';
 		}
 		//Deal with specific variables
 		$lwa['profile_link'] = ( !empty($lwa['profile_link']) && $lwa['profile_link'] !== "false" );
@@ -615,6 +632,10 @@ class LoginWithAjax {
 		        }
 		        foreach( array('login_form','lwa_register_form', 'lostpassword_form') as $action ) add_action($action, 'lwa_wpml_input_var');
 		    }
+			// a refresh choice made for this form (rather than the site-wide setting) has to travel with the login request, see login_result()
+			$refresh = ( isset($instance['refresh']) && $instance['refresh'] !== '' ) ? filter_var($instance['refresh'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : null;
+			static::$refresh_field = $refresh === null ? null : (int) $refresh;
+			if( static::$refresh_field !== null ) add_action('login_form', array(static::class, 'login_form_refresh_field'));
 			//First check for custom templates or theme template default
 			$lwa_data = $lwa; // backwards compatibility
 			if( !empty($lwa['legacy']) ){
@@ -624,12 +645,68 @@ class LoginWithAjax {
 				$template_loc = $templates[$template].'/login.php';
 				include ( $template_loc != '' && file_exists($template_loc) ) ? $template_loc : 'templates/default/login.php';
 			}
+			if( static::$refresh_field !== null ) remove_action('login_form', array(static::class, 'login_form_refresh_field'));
+			static::$refresh_field = null;
 			//quick/easy WPML fix, should eventually go into a seperate file
 			if(  defined('ICL_LANGUAGE_CODE') ){
 			    foreach( array('login_form','lwa_register_form', 'lostpassword_form') as $action ) remove_action($action, 'lwa_wpml_input_var');
 			}
 		}
 		if( !empty(self::$data['template']) ) static::$template = self::$data['template'];
+	}
+	
+	public static function login_form_refresh_field(){
+		if( static::$refresh_field !== null ) echo '<input type="hidden" name="refresh" value="'. absint(static::$refresh_field) .'">';
+	}
+
+	/**
+	 * Cleans an inline CSS string so it is safe inside a style attribute, even one printed without escaping. Regular declarations go through WordPress' own filter, custom properties (--name:value) are checked here since older WordPress versions strip them.
+	 * @param string $css
+	 * @return string
+	 */
+	public static function sanitize_css_style( $css ){
+		if( !is_string($css) || trim($css) === '' ) return '';
+		$clean = array();
+		foreach( explode(';', $css) as $declaration ){
+			$declaration = trim($declaration);
+			if( $declaration === '' ) continue;
+			if( preg_match('/^(--[a-zA-Z0-9_-]+)\s*:(.*)$/s', $declaration, $custom_property) ){
+				$value = static::sanitize_css_value($custom_property[2]);
+				if( $value !== '' ) $clean[] = $custom_property[1].':'.$value;
+			}else{
+				$declaration = preg_replace('/[<>"\'`\\\\{}]/', '', safecss_filter_attr($declaration));
+				$declaration = trim($declaration, " \t\n\r\0\x0B;");
+				// WordPress does not look inside url(), var() or calc(), so entities, comments and stray brackets are refused here
+				if( $declaration !== '' && !static::is_unsafe_css($declaration) ) $clean[] = $declaration;
+			}
+		}
+		return empty($clean) ? '' : implode('; ', $clean).'; ';
+	}
+
+	/**
+	 * Returns a CSS value only if it is made of plain value characters, otherwise an empty string. No quotes, escapes, urls or anything else that could end the declaration it sits in.
+	 * @param mixed $value
+	 * @return string
+	 */
+	public static function sanitize_css_value( $value ){
+		$value = is_scalar($value) ? trim((string) $value) : '';
+		if( $value === '' || preg_match('/[^a-zA-Z0-9 #%.,()\/*+_!-]/', $value) || static::is_unsafe_css($value) ) return '';
+		return $value;
+	}
+
+	/**
+	 * Whether a CSS declaration or value holds something we refuse outright: entities, comments, url(), expression() or brackets that do not pair up.
+	 * @param string $css
+	 * @return bool
+	 */
+	public static function is_unsafe_css( $css ){
+		if( strpos($css, '&') !== false || strpos($css, '/*') !== false || preg_match('/(url|expression)\s*\(/i', $css) ) return true;
+		$depth = 0;
+		foreach( str_split($css) as $char ){
+			if( $char === '(' ) $depth++;
+			if( $char === ')' && --$depth < 0 ) return true;
+		}
+		return $depth !== 0;
 	}
 	
 	public static function get_output( $instance = array() ){
@@ -642,18 +719,36 @@ class LoginWithAjax {
 		static::output( $instance );
 	}
 
-	public static function shortcode($atts){
+	public static function shortcode($atts, $content = null, $tag = ''){
 		$defaults = array(
 			'profile_link' => true,
-			'template' => 'default',
+			// a bare [ajaxauth] follows the Default Template setting, the older tags keep Default because existing pages rely on it
+			'template' => $tag === 'ajaxauth' && !empty(self::$data['template']) ? self::$data['template'] : 'default',
+			'template_color' => '',
+			'css_style' => '',
+			'vanilla' => false,
+			'title' => '',
 			'registration' => true,
 			'redirect' => false,
 			'redirect_logout' => false,
 			'remember' => true,
 			'rememberme' => 1,
-			'refresh' => true,
+			'refresh' => '',
+			'title_loggedin' => '',
+			'loggedin_vertical' => false,
+			'avatar_size' => 60,
+			'avatar_rounded' => false,
 		);
-		$atts = shortcode_atts($defaults, $atts);
+		$atts = shortcode_atts($defaults, is_array($atts) ? $atts : array());
+		// anything left blank falls back to the settings page or the output() defaults
+		foreach( array('template_color', 'css_style', 'title', 'title_loggedin', 'refresh') as $att ){
+			if( $atts[$att] === '' ) unset($atts[$att]);
+		}
+		// shortcode values are strings, so "0", "false" and "no" all need to mean off
+		foreach( array('vanilla', 'loggedin_vertical', 'avatar_rounded') as $att ){
+			$atts[$att] = filter_var($atts[$att], FILTER_VALIDATE_BOOLEAN);
+		}
+		$atts['avatar_size'] = absint($atts['avatar_size']);
 		unset($atts['modal_button_html']); // security precaution
 		unset($atts['v']);
 		unset($atts['force_login_display']);
@@ -708,7 +803,7 @@ class LoginWithAjax {
 	    }elseif( file_exists(get_template_directory().'/plugins/login-with-ajax/'.$template_path) ){ //Parent Theme (if parent exists)
 	    	return trailingslashit(get_template_directory_uri())."plugins/login-with-ajax/$template_path";
 	    }elseif( file_exists(WP_CONTENT_DIR.'/plugin-templates/login-with-ajax/'.$template_path) ){ //login-with-ajax folder in wp-contents
-		    return trailingslashit(WP_CONTENT_DIR)."plugin-templates/login-with-ajax/$template_path";
+		    return trailingslashit(content_url())."plugin-templates/login-with-ajax/$template_path";
 	     
 	    }
 	    //Default file in plugin folder
@@ -798,8 +893,9 @@ class LoginWithAjax {
 		//Get Templates from theme and default by checking for folders - we assume a template works if a folder exists!
 		//Note that duplicate template names are overwritten in this order of precedence (highest to lowest) - Child Theme > Parent Theme > wp-content folder > Plugin Defaults
 		//First are the defaults in the plugin directory, we know these so hard-code found data
-		self::find_templates( path_join( WP_PLUGIN_DIR , basename( dirname( __FILE__ ) ). "/templates/") );
-		$plugin_templates_folder = path_join( WP_PLUGIN_DIR , basename( dirname( __FILE__ ) ). "/templates/");
+		// PHP resolves symlinks in __FILE__, so joining its folder name onto WP_PLUGIN_DIR breaks symlinked installs
+		$plugin_templates_folder = LOGIN_WITH_AJAX_PATH . "/templates/";
+		self::find_templates( $plugin_templates_folder );
 		if( !empty(static::$data['legacy']) ) {
 			self::$templates = array('default' => $plugin_templates_folder . 'legacy-default', 'modal' => $plugin_templates_folder . 'legacy-modal', 'divs-only' => $plugin_templates_folder . 'legacy-divs-only',);
 		}else{
@@ -1002,8 +1098,11 @@ if( !empty($lwa_data['notification_override']) ){
 	include_once('pluggable.php');
 }
 
+//Keep Pro license and update requests on the current host
+include_once('lwa-license-host.php');
+
 //Template Tag
 function login_with_ajax($atts = ''){
-    if( !array($atts) ) $atts = shortcode_parse_atts($atts);
+    if( !is_array($atts) ) $atts = !empty($atts) ? shortcode_parse_atts($atts) : array();
 	echo \LoginWithAjax::shortcode($atts);
 }

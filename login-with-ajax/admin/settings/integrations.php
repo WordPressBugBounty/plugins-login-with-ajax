@@ -39,7 +39,7 @@
 	<p>
 		<?php esc_html_e('Add WhatsApp, Twillio (SMS & WhatsApp), Telegram and more!.', 'login-with-ajax'); ?>
 	</p>
-	<a href="https://loginwithajax.com/gopro/" class="button-primary" target="_blank"><?php esc_html_e('Go Pro!', 'login-with-ajax'); ?></a>
+	<a href="https://ajaxauth.com/gopro/" class="button-primary" target="_blank"><?php esc_html_e('Go Pro!', 'login-with-ajax'); ?></a>
 </div>
 <?php endif; ?>
 <?php do_action('lwa_settings_integrations_footer'); ?>

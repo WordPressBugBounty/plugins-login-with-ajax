@@ -10,7 +10,7 @@ class Admin {
 	public static function admin_settings(){
 		$lwa = get_option('lwa_data', array());
 		$passkeys = !empty($lwa['passkeys']) ? $lwa['passkeys']: array('enabled' => false);
-		$docs_link = '<a href="https://docs.loginwithajax.com/security/passkeys/" target="_blank">'. esc_html__('documentation','login-with-ajax-pro') .'</a>';
+		$docs_link = '<a href="https://docs.ajaxauth.com/security/passkeys/" target="_blank">'. esc_html__('documentation','login-with-ajax-pro') .'</a>';
 		?>
 		<h3><?php esc_html_e("Passkeys (FIDO2 & Webauth)", 'login-with-ajax-pro'); ?></h3>
 		<p><em><?php esc_html_e("Passkeys offer a secure and user-friendly login method without passwords, utilizing unique digital keys or biometric data from your device, like fingerprints or facial recognition, to ensure unparalleled security and protect your account from phishing and hacking.", 'login-with-ajax-pro'); ?></em></p>

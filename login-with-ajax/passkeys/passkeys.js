@@ -159,9 +159,9 @@ let LWA_Passkeys = {
 			}
 			try {
 				if ( !button.getAttribute('data-text') ) {
-					button.setAttribute('data-text', button.innerHTML);
+					button.setAttribute('data-text', button.textContent);
 				}
-				button.innerHTML = button.getAttribute('data-text-loading');
+				button.textContent = button.getAttribute('data-text-loading');
 				button.disabled = true;
 
 				let data = {};
@@ -172,6 +172,10 @@ let LWA_Passkeys = {
 					// get redirect url if defined
 					if( form.querySelector('[name="redirect_to"]') ) {
 						data.redirect_to = form.querySelector('[name="redirect_to"]').value;
+					}
+					// a refresh choice made for this form applies to a passkey login too
+					if( form.querySelector('[name="refresh"]') ) {
+						data.refresh = form.querySelector('[name="refresh"]').value;
 					}
 				} else {
 					data.testing = true;
@@ -196,7 +200,7 @@ let LWA_Passkeys = {
 				handleError(error);
 			}
 			if( !response.result || !isLive ) {
-				button.innerHTML = button.getAttribute('data-text');
+				button.textContent = button.getAttribute('data-text');
 				button.disabled = false;
 			}
 		}
@@ -210,9 +214,9 @@ let LWA_Passkeys = {
 	handleAdd : async function( button ) {
 		// add loading text to button
 		if ( !button.getAttribute('data-text') ) {
-			button.setAttribute('data-text', button.innerHTML);
+			button.setAttribute('data-text', button.textContent);
 		}
-		button.innerHTML = button.getAttribute('data-text-loading');
+		button.textContent = button.getAttribute('data-text-loading');
 		// create new passkey
 		LWA_Passkeys.create().then( response => {
 			if ( response.success ) {
@@ -243,7 +247,7 @@ let LWA_Passkeys = {
 			alert( error.error || error.message || 'unknown error occured' );
 		}).finally( () => {
 			// reset button text
-			button.innerHTML = button.getAttribute('data-text');
+			button.textContent = button.getAttribute('data-text');
 		});
 	},
 
@@ -257,9 +261,9 @@ let LWA_Passkeys = {
 		let list = passkey.querySelector('ul.passkeys-list');
 		// add loading text to button
 		if ( !button.getAttribute('data-text') ) {
-			button.setAttribute('data-text', button.innerHTML);
+			button.setAttribute('data-text', button.textContent);
 		}
-		button.innerHTML = button.getAttribute('data-text-loading');
+		button.textContent = button.getAttribute('data-text-loading');
 		// save passkey label
 		let response = await window.fetch( LWA.passkeys.url.edit, {
 			method: 'POST',
@@ -279,7 +283,7 @@ let LWA_Passkeys = {
 			alert( response.error );
 		}
 		// reset button text
-		button.innerHTML = button.getAttribute('data-text');
+		button.textContent = button.getAttribute('data-text');
 	},
 
 	/**

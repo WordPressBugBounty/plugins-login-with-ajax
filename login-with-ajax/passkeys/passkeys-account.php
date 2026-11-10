@@ -25,6 +25,7 @@ class Account {
 			// WC integration
 			add_action('woocommerce_edit_account_form', array( static::class, 'show_profile_fields_current_user' ) );
 		}
+		add_shortcode('ajaxauth_passkeys_editor', array( static::class, 'shortcode' ) );
 		add_shortcode('lwa_passkeys_editor', array( static::class, 'shortcode' ), 1 );
 	}
 	

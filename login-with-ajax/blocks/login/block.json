@@ -2,10 +2,10 @@
 	"apiVersion": 2,
 	"name": "login-with-ajax/login",
 	"version": "0.1.0",
-	"title": "Login With AJAX",
+	"title": "AJAX Auth",
 	"category": "widgets",
 	"icon": "lock",
-	"description": "Login With AJAX block to generate login widget shortcode.",
+	"description": "AJAX Auth block to generate login widget shortcode.",
 	"supports": {
 		"html": false
 	},
