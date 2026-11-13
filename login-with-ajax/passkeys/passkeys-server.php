@@ -31,7 +31,9 @@ class Server {
 		
 		require_once 'webauthn/WebAuthn.php';
 		try {
-			session_start();
+			if ( session_status() !== PHP_SESSION_ACTIVE ) {
+				session_start();
+			}
 			
 			// read get argument and post body
 			$fn = filter_input(INPUT_GET, 'fn');
@@ -132,7 +134,7 @@ class Server {
 				$createArgs = $WebAuthn->getCreateArgs(\hex2bin($userId), $userName, $userDisplayName, 60*4, $requireResidentKey, $userVerification, $crossPlatformAttachment);
 				
 				//\LoginWithAjax::update_user_meta( $user->ID, 'passkeys[challenge]', $WebAuthn->getChallenge() );
-				$_SESSION['challenge'] = $WebAuthn->getChallenge();
+				$_SESSION['challenge'] = $WebAuthn->getChallenge()->getBinaryString();
 				
 				// return create args
 				wp_send_json( $createArgs );
@@ -144,7 +146,7 @@ class Server {
 				$attestationObject = base64_decode($post->attestationObject);
 				
 				// find challenge from user ID and make sure this lines up with user that's logged in to create the
-				$challenge = $_SESSION['challenge'] ?? '';
+				$challenge = static::get_session_challenge();
 				if( empty($challenge) ) {
 					wp_send_json( array( 'result' => false, 'success' => false, 'msg' => 'No challenge found for user' ) );
 				}
@@ -212,7 +214,7 @@ class Server {
 				$getArgs = $WebAuthn->getGetArgs($ids, 60*4, $typeUsb, $typeNfc, $typeBle, $typeHyb, $typeInt, $userVerification);
 				
 				// save challange again, we may need it later
-				$_SESSION['challenge'] = $WebAuthn->getChallenge();
+				$_SESSION['challenge'] = $WebAuthn->getChallenge()->getBinaryString();
 				
 				wp_send_json( $getArgs );
 				
@@ -223,7 +225,7 @@ class Server {
 				$signature = base64_decode($post->signature);
 				$userHandle = base64_decode($post->userHandle);
 				$id = bin2hex(base64_decode($post->id));
-				$challenge = $_SESSION['challenge'] ?? '';
+				$challenge = static::get_session_challenge();
 				$credentialPublicKey = null;
 				
 				$user_id = static::get_user_id( bin2hex($userHandle) );
@@ -344,6 +346,20 @@ class Server {
 		}
 		$result = update_user_meta( $user_id, 'lwa_passkeys', $passkeys );
 		return $result || $current_passkey == $passkey;
+	}
+	
+	/**
+	 * Returns the WebAuthn challenge stored in the session as a binary string.
+	 * It is stored as a string because a session started by another plugin before WebAuthn loads cannot rebuild a stored ByteBuffer object.
+	 *
+	 * @return string
+	 */
+	public static function get_session_challenge() {
+		$challenge = $_SESSION['challenge'] ?? '';
+		if ( $challenge instanceof \lbuchs\WebAuthn\Binary\ByteBuffer ) {
+			return $challenge->getBinaryString();
+		}
+		return is_string( $challenge ) ? $challenge : '';
 	}
 	
 	public static function get_passkey( $user_id, $passkey_id ) {
