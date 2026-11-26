@@ -25,8 +25,13 @@ class Passkeys extends Method {
 	}
 	
 	public static function lwa_2FA_login_response( $response, $user ) {
+		$urls = \Login_With_AJAX\Passkeys\Passkeys::get_urls( $user->ID );
+		if( TwoFA::has_ready_method( $user ) ) {
+			// login is still waiting for the second factor, so only hand out what is needed to log in with an existing passkey
+			$urls = array_intersect_key( $urls, array( 'get' => true, 'verify' => true ) );
+		}
 		$response['passkeys'] = array(
-			'url' => \Login_With_AJAX\Passkeys\Passkeys::get_urls( $user->ID ),
+			'url' => $urls,
 		);
 		return $response;
 	}

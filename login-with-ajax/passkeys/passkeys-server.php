@@ -28,6 +28,9 @@ class Server {
 		if ( !$nonce_check ) {
 			wp_send_json( array( 'success' => false, 'result' => false, 'msg' => 'Invalid nonce' ) );
 		}
+		if ( $nonce_check instanceof \WP_User && !static::can_manage_passkeys( $nonce_check ) ) {
+			wp_send_json( array( 'success' => false, 'result' => false, 'error' => esc_html__('You do not have permission to manage passkeys for this account.', 'login-with-ajax') ) );
+		}
 		
 		require_once 'webauthn/WebAuthn.php';
 		try {
@@ -319,6 +322,22 @@ class Server {
 		}
 	}
 	
+	/**
+	 * Checks if the current visitor may add, rename or delete passkeys on the given account.
+	 *
+	 * Logged-out visitors only get this while setting up 2FA for the first time, before the account has any second factor that a new passkey could sidestep.
+	 *
+	 * @param \WP_User $user
+	 * @return bool
+	 */
+	public static function can_manage_passkeys( $user ) {
+		if ( is_user_logged_in() ) {
+			return get_current_user_id() === $user->ID || current_user_can( 'edit_user', $user->ID );
+		}
+		$TwoFA = '\Login_With_AJAX\TwoFA';
+		return class_exists( $TwoFA ) && $TwoFA::is_enabled() && !$TwoFA::has_ready_method( $user );
+	}
+
 	/**
 	 * Updates or adds a passkey to the passkeys list of given User ID
 	 * @param int $user_id

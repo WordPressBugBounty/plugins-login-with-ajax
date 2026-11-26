@@ -149,6 +149,10 @@ class Account {
 	public static function setup_ajax() {
 		// get nonce and if verified then proceed
 		$user = LoginWithAjax::check_user_and_nonce('2FA-setup-');
+		if( !empty($user) && !is_user_logged_in() && TwoFA::has_ready_method( $user ) ) {
+			// setup before login is only for accounts that have no second factor yet
+			$user = false;
+		}
 		if( !empty($user) ) {
 			// check if user has methods available
 			foreach( TwoFA::$methods as $method ) {

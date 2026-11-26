@@ -3,8 +3,8 @@ Contributors: pxlite, msykes, netweblogic
 Tags: login, passkeys, registration, 2FA, security
 Text Domain: login-with-ajax
 Requires at least: 4.8
-Tested up to: 7.0
-Stable tag: 4.6.1
+Tested up to: 7.1
+Stable tag: 4.6.2
 Requires PHP: 5.2
 License: GPLv2 or later
 
@@ -172,6 +172,10 @@ Check out our [troubleshooting](https://docs.ajaxauth.com/troubleshooting/) and 
 We recommend first visiting our [documentation site](https://docs.ajaxauth.com) which includes a troubleshooting section. IF you have a question or comment, we're available both on our [community forums](https://wordpress.org/support/plugin/login-with-ajax/) which we monitor regularly, as well as our [Pro support](https://ajaxauth.com/gopro/) for dedicated one-to-one support.
 
 == Changelog ==
+= 4.6.2 =
+* Security: Fixed a two-factor authentication vulnerability, reported by Het Kalariya via WPScan
+* Security: Fixed a passkeys vulnerability, reported by duckmkl via WPScan
+
 = 4.6.1 =
 * Fixed: passkey logins failing with an __PHP_Incomplete_Class error when another plugin starts the PHP session first
 

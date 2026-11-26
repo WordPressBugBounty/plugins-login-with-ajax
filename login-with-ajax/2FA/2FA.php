@@ -37,6 +37,21 @@ class TwoFA {
 	 */
 	public static $authentication_timeout = 600;
 	/**
+	 * Failed verification attempts allowed per 2FA session before the session is invalidated and the user must log in again.
+	 * @var int
+	 */
+	public static $max_attempts = 5;
+	/**
+	 * Failed verification attempts allowed per user within $lockout_period, across all 2FA sessions, before verification is refused until the period ends.
+	 * @var int
+	 */
+	public static $max_user_attempts = 10;
+	/**
+	 * Seconds that the per-user failed attempt count covers.
+	 * @var int
+	 */
+	public static $lockout_period = 3600;
+	/**
 	 * Stores logged in cookie value for use in 2FA
 	 * @var string
 	 */
@@ -274,6 +289,13 @@ class TwoFA {
 			$response['message'] = esc_html__('Please proceed with additional login verfication steps.', 'login-with-ajax-pro');
 			$response['skip'] = true;
 			// show setup or request 2FA
+			if( !empty($ready_methods) && static::is_locked_out( $user ) ) {
+				$response['result'] = false;
+				$response['skip'] = false;
+				$response['message'] = '';
+				$response['error'] = static::get_lockout_error();
+				return $response;
+			}
 			if( !empty($ready_methods) ) {
 				// get 2FA settings
 				$TwoFA = LoginWithAjax::$data['2FA'];
@@ -282,7 +304,10 @@ class TwoFA {
 				// add user meta - note that in the future we'll add methods when user requests a specific method to verify with
 				$user_meta = LoginWithAjax::get_user_meta( $user->ID, '2FA[verification]' );
 				if( !empty($user_meta) ) {
-					if( empty( $user_meta['id']) ) $user_meta['id'] = $uuid;
+					if( empty( $user_meta['id']) ) {
+						$user_meta['id'] = $uuid;
+						update_user_meta( $user->ID, 'lwa_2FA_attempts', 0 );
+					}
 					$user_meta['ts'] = time(); // reset time regardless
 					if( empty($user_meta['methods']) ) $user_meta['methods'] = array();
 				}else{
@@ -291,6 +316,7 @@ class TwoFA {
 						'ts' => time(),
 						'methods' => array(),
 					);
+					update_user_meta( $user->ID, 'lwa_2FA_attempts', 0 );
 				}
 				$meta = apply_filters('lwa_2FA_usermeta', $user_meta , $user);
 				LoginWithAjax::update_user_meta( $user->ID, '2FA[verification]', $meta ); // overwrite any previous one
@@ -388,9 +414,28 @@ class TwoFA {
 				if( !empty($user_meta['id']) && $user_meta['id'] === $_REQUEST['2FA_id'] ){
 					// verify the timestamp to make sure we're within time
 					if( $user_meta['ts'] > (time() - static::$authentication_timeout ) ){
+						$method_type = sanitize_key($_REQUEST['2FA']);
+						// authorize methods are polled while waiting for approval on another device, so only guessable methods count towards the attempt limits
+						$method_class = !empty(static::$methods[$method_type]) ? static::$methods[$method_type] : false;
+						$limit_attempts = $method_class && $method_class::$verification !== 'authorize';
+						if( $limit_attempts ) {
+							$attempt = static::reserve_attempt( $user );
+							if( $attempt !== true ) {
+								static::invalidate_session( $user );
+								$response['error'] = $attempt === 'lwa_2FA_user_attempts' ? static::get_lockout_error() : esc_html__('Too many incorrect verification attempts, please log in again.', 'login-with-ajax');
+								$response['restart'] = true;
+								return $response;
+							}
+						}
 						$response['error'] = esc_html__('Could not validate your verification method due to an unknown error.', 'login-with-ajax-pro') . ' ' . $admin_error;
-						$response = apply_filters('lwa_2FA_verify_'.sanitize_key($_REQUEST['2FA']), $response, $user);
+						$response = apply_filters('lwa_2FA_verify_'.$method_type, $response, $user);
+						if( $response['result'] !== true && $limit_attempts && (int) get_user_meta( $user->ID, 'lwa_2FA_attempts', true ) >= static::get_max_attempts( $user ) ) {
+							static::invalidate_session( $user );
+							$response['error'] = esc_html__('Too many incorrect verification attempts, please log in again.', 'login-with-ajax');
+							$response['restart'] = true;
+						}
 						if( $response['result'] === true ){
+							static::reset_attempts( $user );
 							// verified, log user in and proceed
 							remove_all_filters('lwa_authenticate'); // prevent other authentication methods from blocking the 2FA success
 							$response = LoginWithAjax::login(); // circumvent and get the regular login response as if a regular login was submitted
@@ -446,7 +491,10 @@ class TwoFA {
 			$method = static::$methods[$method];
 			$user_meta = LoginWithAjax::get_user_meta( $user->ID, '2FA[verification]' );
 			// verify the timestamp to make sure we're within time
-			if ( $user_meta['ts'] > ( time() - static::$authentication_timeout ) ) {
+			if ( static::is_locked_out( $user ) ) {
+				$response['error'] = static::get_lockout_error();
+				$response['restart'] = true;
+			} elseif ( $user_meta['ts'] > ( time() - static::$authentication_timeout ) ) {
 				$response = $method::request( $user );
 			} else {
 				$response['error'] = esc_html__( 'Your verification session has expired, please log in again.', 'login-with-ajax-pro' );
@@ -455,7 +503,100 @@ class TwoFA {
 		}
 		return $response;
 	}
-	
+
+	public static function get_max_attempts( $user ) {
+		return absint( apply_filters('lwa_2FA_max_attempts', static::$max_attempts, $user) );
+	}
+
+	public static function get_max_user_attempts( $user ) {
+		return absint( apply_filters('lwa_2FA_max_user_attempts', static::$max_user_attempts, $user) );
+	}
+
+	public static function get_lockout_period( $user ) {
+		return absint( apply_filters('lwa_2FA_lockout_period', static::$lockout_period, $user) );
+	}
+
+	public static function get_lockout_error() {
+		return esc_html__('Too many incorrect verification attempts, please try again later.', 'login-with-ajax');
+	}
+
+	/**
+	 * Checks if the user has used up their failed verification attempts for the current lockout period.
+	 * @param WP_User $user
+	 * @return bool
+	 */
+	public static function is_locked_out( $user ) {
+		$window_start = (int) get_user_meta( $user->ID, 'lwa_2FA_user_attempts_ts', true );
+		$attempts = (int) get_user_meta( $user->ID, 'lwa_2FA_user_attempts', true );
+		return $window_start > time() - static::get_lockout_period( $user ) && $attempts >= static::get_max_user_attempts( $user );
+	}
+
+	/**
+	 * Uses up one verification attempt for the user's current 2FA session and for the user overall, before the code is checked.
+	 *
+	 * @param WP_User $user
+	 * @return true|string True if an attempt is available, otherwise the meta key of the limit that was reached.
+	 */
+	public static function reserve_attempt( $user ) {
+		global $wpdb;
+		$now = time();
+		if ( !metadata_exists( 'user', $user->ID, 'lwa_2FA_user_attempts_ts' ) ) {
+			add_user_meta( $user->ID, 'lwa_2FA_user_attempts_ts', $now, true );
+		}
+		$limits = array(
+			'lwa_2FA_attempts' => static::get_max_attempts( $user ),
+			'lwa_2FA_user_attempts' => static::get_max_user_attempts( $user ),
+		);
+		foreach ( $limits as $meta_key => $limit ) {
+			if ( !metadata_exists( 'user', $user->ID, $meta_key ) ) {
+				add_user_meta( $user->ID, $meta_key, 0, true );
+			}
+		}
+		// counters are changed with conditional SQL updates so that parallel requests cannot all read the same count and each get a guess
+		$window_reset = $wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->usermeta} SET meta_value = %d WHERE user_id = %d AND meta_key = 'lwa_2FA_user_attempts_ts' AND CAST(meta_value AS UNSIGNED) <= %d", $now, $user->ID, $now - static::get_lockout_period( $user ) ) );
+		if ( $window_reset ) {
+			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->usermeta} SET meta_value = 0 WHERE user_id = %d AND meta_key = 'lwa_2FA_user_attempts'", $user->ID ) );
+		}
+		$result = true;
+		foreach ( $limits as $meta_key => $limit ) {
+			$reserved = $wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->usermeta} SET meta_value = CAST(meta_value AS UNSIGNED) + 1 WHERE user_id = %d AND meta_key = %s AND CAST(meta_value AS UNSIGNED) < %d", $user->ID, $meta_key, $limit ) );
+			if ( !$reserved ) {
+				$result = $meta_key;
+				break;
+			}
+		}
+		wp_cache_delete( $user->ID, 'user_meta' );
+		return $result;
+	}
+
+	/**
+	 * Clears failed attempt counters after a successful verification.
+	 * @param WP_User $user
+	 * @return void
+	 */
+	public static function reset_attempts( $user ) {
+		delete_user_meta( $user->ID, 'lwa_2FA_attempts' );
+		delete_user_meta( $user->ID, 'lwa_2FA_user_attempts' );
+		delete_user_meta( $user->ID, 'lwa_2FA_user_attempts_ts' );
+	}
+
+	/**
+	 * Ends the current 2FA session and discards any codes issued in it, keeping remembered devices. The session attempt counter is left as is so requests already in flight stay refused, it is reset when the next session starts.
+	 * @param WP_User $user
+	 * @return void
+	 */
+	public static function invalidate_session( $user ) {
+		$user_meta = LoginWithAjax::get_user_meta( $user->ID, '2FA[verification]' );
+		if ( is_array( $user_meta ) ) {
+			unset( $user_meta['id'], $user_meta['ts'], $user_meta['methods'] );
+		}
+		if ( empty( $user_meta ) ) {
+			LoginWithAjax::delete_user_meta( $user->ID, '2FA[verification]' );
+		} else {
+			LoginWithAjax::update_user_meta( $user->ID, '2FA[verification]', $user_meta );
+		}
+	}
+
 	public static function footer(){
 		if( did_action('lwa_2FA_form_footer') ) return; //only one modal needed
 		$cancelled_msg = esc_html__('Verification process cancelled, please try again.', 'login-with-ajax-pro');

@@ -77,7 +77,7 @@ class Method_Code extends Method_Transport {
 	 */
 	public static function generate_code( $user ){
 		// generate the code & save user meta first
-		$code = rand(100000,999999);
+		$code = wp_rand(100000,999999);
 		$meta = LoginWithAjax::get_user_meta( $user->ID, '2FA[verification]' );
 		if( empty($meta['methods'][static::$method]) ) {
 			$meta['methods'][static::$method] = array();
@@ -101,7 +101,7 @@ class Method_Code extends Method_Transport {
 		$user_meta = LoginWithAjax::get_user_meta( $user->ID, '2FA[verification]' );
 		if ( !empty($user_meta['methods'][static::$method]['code']) ) {
 			if ( $user_meta['methods'][static::$method]['ts'] + static::$authentication_timeout > time() ) {
-				if( $user_meta['methods'][static::$method]['code'] == $_REQUEST['2FA_code'] ){
+				if( !empty($_REQUEST['2FA_code']) && hash_equals( (string) $user_meta['methods'][static::$method]['code'], trim( sanitize_text_field( wp_unslash( $_REQUEST['2FA_code'] ) ) ) ) ){
 					// verified!
 					$response['result'] = true;
 				}else{
